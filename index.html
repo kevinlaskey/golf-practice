@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#f4f7f4"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="SGGrind"/>
+<title>Short Game Grind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  /*
+   * Bright Masters Palette — light theme
+   * --bg:          #f4f7f4   very light green-tinted white
+   * --surface:     #ffffff   card white
+   * --surface-2:   #eef3ee   slightly tinted surface
+   * --green:       #1a5c34   Masters green (text, accents)
+   * --green-mid:   #2e7d4f   mid green (buttons)
+   * --green-light: #e8f2eb   light green tint (tip bg, highlights)
+   * --gold:        #b8892a   Augusta gold (accent)
+   * --gold-light:  #fdf4e0   light gold tint
+   * --text:        #1a2e22   near-black green
+   * --text-mid:    #4a6652   mid-tone text
+   * --text-faint:  #8aaa90   faint labels
+   * --border:      #d0dfd3   light green-grey border
+   * --red:         #c0392b   skip/danger
+   * --shadow:      rgba(26,92,52,.1)
+   */
+
+  *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+  body {
+    background: #f4f7f4;
+    color: #1a2e22;
+    font-family: 'Source Sans 3', sans-serif;
+    min-height: 100svh;
+    overscroll-behavior: none;
+  }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  input[type=number] { -moz-appearance: textfield; }
+  button:active { opacity: 0.8; }
+  .serif { font-family: 'Playfair Display', serif; }
+
+  /* ── Layout ── */
+  #app { max-width: 480px; margin: 0 auto; padding: 0 18px 80px; }
+
+  /* ── Bottom nav ── */
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #ffffff;
+    border-top: 2px solid #d0dfd3;
+    display: flex; z-index: 50;
+    box-shadow: 0 -2px 16px rgba(26,92,52,.08);
+  }
+  #nav button {
+    flex: 1; background: transparent; border: none; border-top: 3px solid transparent;
+    color: #8aaa90; font-family: 'Source Sans 3', sans-serif; font-size: 11px;
+    padding: 11px 0 13px; cursor: pointer; letter-spacing: .1em; text-transform: uppercase;
+    transition: color .2s; margin-top: -2px;
+  }
+  #nav button.active { color: #1a5c34; border-top-color: #1a5c34; }
+
+  /* ── Cards ── */
+  .card {
+    background: #ffffff;
+    border: 1px solid #d0dfd3;
+    border-radius: 12px; padding: 16px; margin-bottom: 9px;
+    box-shadow: 0 1px 4px rgba(26,92,52,.06);
+  }
+  .card.clickable { cursor: pointer; transition: box-shadow .18s, border-color .18s, transform .1s; }
+  .card.clickable:hover { border-color: #2e7d4f; box-shadow: 0 3px 12px rgba(26,92,52,.12); transform: translateY(-1px); }
+  .card.clickable:active { transform: translateY(0); }
+
+  .section-label {
+    font-family: 'Playfair Display', serif; font-size: 10px; letter-spacing: .2em;
+    text-transform: uppercase; color: #8aaa90; margin-bottom: 10px;
+  }
+  .badge {
+    background: #fdf4e0; border: 1px solid #d4a843;
+    border-radius: 18px; padding: 3px 11px; font-size: 11px; color: #b8892a;
+    letter-spacing: .06em; white-space: nowrap; font-weight: 600;
+  }
+  .tip {
+    background: #e8f2eb; border: 1px solid #b0d4bc;
+    border-radius: 9px; padding: 10px 13px; font-size: 12px;
+    color: #2e5c3a; line-height: 1.65; margin-top: 13px;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    background: #1a5c34; color: #ffffff; border: none; border-radius: 10px;
+    padding: 14px 22px; font-size: 13px; font-weight: 700;
+    font-family: 'Source Sans 3', sans-serif; cursor: pointer;
+    letter-spacing: .1em; text-transform: uppercase; width: 100%; margin-top: 16px;
+    box-shadow: 0 2px 10px rgba(26,92,52,.3);
+    transition: background .15s, box-shadow .15s;
+  }
+  .btn:hover { background: #2e7d4f; box-shadow: 0 4px 16px rgba(26,92,52,.35); }
+  .btn-green {
+    background: #2e7d4f; color: #ffffff;
+    box-shadow: 0 2px 10px rgba(46,125,79,.3);
+  }
+  .btn-ghost {
+    background: #ffffff; color: #4a6652;
+    border: 1px solid #d0dfd3;
+    border-radius: 10px; padding: 10px 14px; font-size: 12px;
+    cursor: pointer; font-family: 'Source Sans 3', sans-serif;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .btn-ghost:hover { border-color: #2e7d4f; color: #1a5c34; background: #f0f8f2; }
+  .btn-danger { color: #c0392b; border-color: rgba(192,57,43,.35); background: #fff5f5; }
+  .btn-danger:hover { background: #ffeeed; border-color: #c0392b; }
+  .btn-muted { border: none; font-size: 11px; color: #aabfb0; background: transparent; }
+
+  /* ── Form inputs ── */
+  .inp {
+    background: #f4f7f4; border: 1.5px solid #d0dfd3;
+    border-radius: 8px; padding: 10px 13px; font-size: 16px;
+    color: #1a2e22; font-family: 'Source Sans 3', sans-serif; width: 100%;
+    transition: border-color .15s, background .15s;
+  }
+  .inp:focus { outline: none; border-color: #2e7d4f; background: #ffffff; }
+  textarea.inp { resize: none; }
+
+  .counter-btn {
+    background: #eef3ee; border: 1.5px solid #b8d4c0;
+    border-radius: 8px; width: 48px; height: 48px; font-size: 24px;
+    color: #1a5c34; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; font-family: 'Source Sans 3', sans-serif;
+    transition: background .15s, border-color .15s;
+  }
+  .counter-btn:hover { background: #daeede; border-color: #2e7d4f; }
+
+  /* ── Club buttons ── */
+  .club-btn { padding: 6px 12px; font-size: 12px; }
+  .club-btn.selected { background: #e8f2eb; color: #1a5c34; border-color: #2e7d4f; font-weight: 600; }
+
+  /* ── Space badges ── */
+  .space-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    border-radius: 6px; padding: 3px 8px; font-size: 10px; white-space: nowrap;
+    letter-spacing: .03em; font-weight: 600;
+  }
+  .space-full  { background: #fdf0ee; border: 1px solid #e8a090; color: #c0392b; }
+  .space-edge  { background: #fdf4e0; border: 1px solid #d4a843; color: #b8892a; }
+  .space-solo  { background: #e8f2eb; border: 1px solid #7abf8e; color: #1a5c34; }
+
+  /* ── Progress dots ── */
+  .dot {
+    height: 7px; border-radius: 4px;
+    background: #d0dfd3;
+    transition: all .28s;
+  }
+  .dot.done   { background: #1a5c34; }
+  .dot.active { background: #2e7d4f; }
+  .dot.busy   { background: #e8a090; }
+  .dot.skip   { background: #d0dfd3; }
+
+  /* ── Skip overlay ── */
+  #skip-overlay {
+    position: fixed; inset: 0; background: rgba(26,46,34,.5);
+    z-index: 200; display: none; align-items: flex-end; justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+  #skip-overlay.open { display: flex; }
+  #skip-sheet {
+    background: #ffffff; border: 1px solid #d0dfd3;
+    border-top: 3px solid #1a5c34;
+    border-radius: 18px 18px 0 0; padding: 26px 22px 44px;
+    width: 100%; max-width: 480px;
+    box-shadow: 0 -8px 32px rgba(26,92,52,.15);
+  }
+  .skip-option {
+    border-radius: 10px; padding: 13px 16px; font-size: 13px;
+    cursor: pointer; font-family: 'Source Sans 3', sans-serif; text-align: left;
+    line-height: 1.5; width: 100%; margin-bottom: 9px;
+  }
+  .skip-busy  { background: #fff5f5; border: 1px solid #e8a090; color: #c0392b; }
+  .skip-today { background: #f4f7f4; border: 1px solid #d0dfd3; color: #4a6652; }
+
+  /* ── Stat tiles ── */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 22px; }
+  .stat-tile {
+    background: #ffffff; border: 1px solid #d0dfd3;
+    border-radius: 11px; padding: 13px 15px;
+    box-shadow: 0 1px 4px rgba(26,92,52,.05);
+  }
+  .stat-label { font-size: 10px; color: #8aaa90; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 5px; }
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 22px; color: #1a5c34; }
+
+  /* ── Chart ── */
+  .chart-wrap {
+    background: #ffffff; border: 1px solid #d0dfd3;
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(26,92,52,.05);
+  }
+  .chart-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .chart-label { font-size: 10px; color: #8aaa90; letter-spacing: .1em; text-transform: uppercase; }
+  .chart-trend { font-size: 10px; font-weight: 600; }
+  .chart-footer { display: flex; justify-content: space-between; font-size: 10px; color: #aabfb0; margin-top: 2px; }
+
+  /* ── Import/export row ── */
+  .io-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .io-row .btn-ghost { flex: 1; font-size: 12px; }
+  .toast { border-radius: 9px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; display: none; }
+  .toast.show { display: block; }
+  .toast.ok  { background: #e8f2eb; border: 1px solid #7abf8e; color: #1a5c34; }
+  .toast.err { background: #fff5f5; border: 1px solid #e8a090; color: #c0392b; }
+
+  /* ── Page header ── */
+  .page-header {
+    padding: 28px 0 20px;
+    border-bottom: 2px solid #d0dfd3;
+    margin-bottom: 20px;
+  }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #1a2e22; }
+  .page-sub { font-size: 12px; color: #8aaa90; margin-top: 4px; letter-spacing: .04em; }
+
+  /* ── Session header ── */
+  .session-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0 14px;
+  }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid #d0dfd3; margin: 16px 0; }
+
+  /* ── Flex helpers ── */
+  .row { display: flex; align-items: center; }
+  .row-between { display: flex; align-items: flex-start; justify-content: space-between; }
+  .gap-7 { gap: 7px; }
+  .gap-8 { gap: 8px; }
+  .gap-16 { gap: 16px; }
+  .wrap { flex-wrap: wrap; }
+  .flex-1 { flex: 1; }
+  .flex-2 { flex: 2; }
+  .mt-0 { margin-top: 0; }
+  .center { text-align: center; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<!-- Bottom nav (hidden during session) -->
+<div id="nav">
+  <button id="nav-plans"   onclick="goTab('plans')"  >⛳ Plans</button>
+  <button id="nav-drills"  onclick="goTab('drills')" >📋 Drills</button>
+  <button id="nav-history" onclick="goTab('history')">📈 History</button>
+</div>
+
+<!-- Skip overlay -->
+<div id="skip-overlay" onclick="closeSkip()">
+  <div id="skip-sheet" onclick="event.stopPropagation()">
+    <div class="serif" style="font-size:19px;color:#1a2e22;margin-bottom:4px">Skip this drill?</div>
+    <div id="skip-drill-name" style="font-size:12px;color:#8aaa90;margin-bottom:18px"></div>
+    <button class="skip-option skip-busy" onclick="doSkip('busy')">
+      🚶 <strong>Green is busy</strong><br>
+      <span style="font-size:11px;opacity:.8">Other people on the green, can't do this right now</span>
+    </button>
+    <button class="skip-option skip-today" onclick="doSkip('skipped')">
+      ⏭ <strong>Skip for today</strong><br>
+      <span style="font-size:11px;opacity:.8">Running short on time, not feeling it, etc.</span>
+    </button>
+    <button class="btn-ghost btn-muted" style="width:100%;margin-top:4px" onclick="closeSkip()">← Go back to drill</button>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
+const DRILLS = [
+  { id:"updown",       name:"Up & Down Game",         duration:10, spaceNeeded:"full", spaceLabel:"Needs open green",
+    description:"Drop 5 balls in 5 different spots (tight lie, fluffy, uphill, downhill, side slope). Chip then putt out each one like a real hole.",
+    metric:"up_downs",       metricLabel:"Up-and-downs made",          metricMax:5,  metricType:"counter",
+    tip:"Vary your spots every session. The rough/fluffy lie is where most strokes are lost.",
+    clubs:["56°","60°","8i bump","52°","Any"] },
+
+  { id:"matrix",       name:"9-Shot Matrix",           duration:15, spaceNeeded:"full", spaceLabel:"Needs open green",
+    description:"Pick 2 clubs. Hit from 3 distances: 5 yds, 15 yds, 25 yds. 3 balls each combo. Pace off proximity after each set.",
+    metric:"proximity",      metricLabel:"Avg proximity (feet)",        metricMax:null, metricType:"input",
+    tip:"Be honest with distances — this is how you find out which club you actually trust.",
+    clubs:["52° + 56°","56° + 60°","60° + 8i","52° + 8i","56° + 8i"] },
+
+  { id:"clock",        name:"Clock Drill",             duration:15, spaceNeeded:"solo", spaceLabel:"Single hole only",
+    description:"Place balls at 3, 6, 9, 12 o'clock around one hole. Make all 4 to advance to next ring. Start at 4 feet.",
+    metric:"clock_dist",     metricLabel:"Farthest ring completed (ft)", metricMax:null, metricType:"input",
+    tip:"The 6 o'clock (straight uphill) is your confidence builder. Finish there when struggling.",
+    clubs:["Putter"] },
+
+  { id:"backswing",    name:"Backswing Length Drill",  duration:5,  spaceNeeded:"solo", spaceLabel:"Single hole only",
+    description:'Set tee markers at 6", 8", 10", 12" behind ball. Hit 3 putts at each length, measure where they finish.',
+    metric:"backswing_10",   metricLabel:'Distance at 10" backswing (ft)', metricMax:null, metricType:"input",
+    tip:"You're building a personal yardage book. Note your 8\" and 12\" distances in the notes too.",
+    clubs:["Putter"] },
+
+  { id:"landing_spot", name:"Landing Spot Game",       duration:10, spaceNeeded:"edge", spaceLabel:"Edge of green",
+    description:"Place a towel or headcover 3 feet onto the green as your landing zone. Hit 10 chips trying to land on it.",
+    metric:"landing_hits",   metricLabel:"Towel hits (out of 10)",     metricMax:10, metricType:"counter",
+    tip:"Pick a spot, not a hole. Tour players aim at a landing spot first — the hole is a result, not a target.",
+    clubs:["56°","60°","52°","8i bump","Any"] },
+
+  { id:"ladder",       name:"Putting Ladder",          duration:10, spaceNeeded:"solo", spaceLabel:"Single hole only",
+    description:'Putt from 5, 10, 15, 20, 25, 30 feet. One ball each. Score +1 if inside 18", 0 if outside, -1 if 3-putt. Max: 6.',
+    metric:"ladder_score",   metricLabel:"Ladder score (-6 to +6)",    metricMax:null, metricType:"input",
+    tip:"This tests distance control more than direction. Focus on pace, not line.",
+    clubs:["Putter"] },
+
+  { id:"one_club",     name:"One Club Challenge",      duration:12, spaceNeeded:"edge", spaceLabel:"Edge of green",
+    description:"Pick ONE wedge. Hit from 5 different lies/distances. Putt out every shot. Forces creative shot-making.",
+    metric:"one_club_ud",    metricLabel:"Up-and-downs made (out of 5)", metricMax:5, metricType:"counter",
+    tip:"Use your 56° — it's the most versatile. Open the face for flops, hood it for bump-runs.",
+    clubs:["52°","56°","60°","8i bump"] },
+
+  { id:"bump_run_race",name:"Bump & Run Race",         duration:8,  spaceNeeded:"edge", spaceLabel:"Edge of green",
+    description:"Set a target 20 feet from the fringe. Hit 5 bump-and-runs trying to finish within 3 feet.",
+    metric:"bump_close",     metricLabel:"Within 3 feet (out of 5)",   metricMax:5,  metricType:"counter",
+    tip:"Land the ball just onto the green and let it run. Think putt with loft, not a chip shot.",
+    clubs:["8i bump","9i","PW"] },
+
+  { id:"worst_lie",    name:"Worst Lie Drill",         duration:10, spaceNeeded:"edge", spaceLabel:"Edge of green",
+    description:"Find 5 genuinely bad lies: buried in rough, tight downhill, against collar, bare hardpan, hanging lie. Putt out each.",
+    metric:"worst_ud",       metricLabel:"Up-and-downs made (out of 5)", metricMax:5, metricType:"counter",
+    tip:"Bad lies aren't bad luck — they're practisable. This builds the shots you actually need.",
+    clubs:["56°","60°","Any"] },
+
+  { id:"three_ball",   name:"3-Ball Putting Game",     duration:8,  spaceNeeded:"solo", spaceLabel:"Single hole only",
+    description:"3 balls from 6 feet. Make all 3 to advance to 8, 10, 12, 15 feet. Miss any and drop back a ring.",
+    metric:"three_ball_ring",metricLabel:"Farthest ring reached (ft)", metricMax:null, metricType:"input",
+    tip:"Needing all 3 simulates a real must-make putt. Don't rush your pre-shot routine.",
+    clubs:["Putter"] },
+
+  { id:"fringe_chip",  name:"Fringe Chip-In Contest",  duration:8,  spaceNeeded:"edge", spaceLabel:"Edge of green",
+    description:"From just off the fringe (2–4 feet), hit 10 short chips trying to hole out or finish stone dead.",
+    metric:"fringe_close",   metricLabel:"Tap-ins + chip-ins (out of 10)", metricMax:10, metricType:"counter",
+    tip:"The putter or 8-iron often wins here. Don't default to loft when you're this close.",
+    clubs:["Putter","8i bump","56°","60°"] },
+];
+
+const PLANS = [
+  { name:"Full Session",      drills:["updown","matrix","clock","backswing"],             label:"45 min" },
+  { name:"Short Game Focus",  drills:["updown","landing_spot","one_club","matrix"],       label:"40 min" },
+  { name:"Putting Day",       drills:["clock","backswing","ladder","three_ball"],         label:"35 min" },
+  { name:"Quick Grind",       drills:["updown","clock"],                                  label:"25 min" },
+  { name:"🚶 Busy Green",     drills:["landing_spot","bump_run_race","fringe_chip","clock"], label:"35 min" },
+  { name:"Bad Lies Special",  drills:["worst_lie","one_club","ladder"],                   label:"30 min" },
+];
+
+const SPACE_INFO = {
+  full: { cls:"space-full",  icon:"⚠", label:"Needs open green",   maxLabel:"Needs open green" },
+  edge: { cls:"space-edge",  icon:"◐", label:"Edge of green",      maxLabel:"Edge of green OK" },
+  solo: { cls:"space-solo",  icon:"✓", label:"Single hole only",   maxLabel:"Works with single hole" },
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let state = {
+  tab: 'plans',         // plans | drills | history
+  screen: 'browse',     // browse | session | done
+
+  // session
+  activePlan: null,
+  activeDrills: [],
+  currentIdx: 0,
+  drillData: {},        // { [idx]: { metric_key: value, notes: '' } }
+  skipped: {},          // { [idx]: 'busy' | 'skipped' }
+  clubSel: {},          // { [idx]: clubName }
+  timerSecs: 0,
+  timerInterval: null,
+  lastSession: null,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'sg_sessions_v3';
+
+function loadSessions() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveSessions(sessions) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions)); }
+  catch(e) { console.warn('localStorage error', e); }
+}
+
+let sessions = loadSessions();
+
+function addSession(session) {
+  session.id = crypto.randomUUID();
+  sessions.push(session);
+  saveSessions(sessions);
+}
+
+function exportData() {
+  const payload = { app:'short-game-grind', version:'1.0', exported: new Date().toISOString(), sessions };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `short-game-grind-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const payload = JSON.parse(e.target.result);
+        if (!Array.isArray(payload.sessions)) throw new Error('Invalid file — missing sessions array');
+        const existingIds = new Set(sessions.map(s => s.id).filter(Boolean));
+        const newOnes = payload.sessions.filter(s => !s.id || !existingIds.has(s.id));
+        sessions = [...sessions, ...newOnes].sort((a,b) => new Date(a.date) - new Date(b.date));
+        saveSessions(sessions);
+        resolve(newOnes.length);
+      } catch(err) { reject(err); }
+    };
+    reader.onerror = () => reject(new Error('File read failed'));
+    reader.readAsText(file);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function fmtTimer(s) {
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+function getDrill(id) { return DRILLS.find(d => d.id === id); }
+
+function drillVal(idx, key) {
+  return state.drillData[idx]?.[key] ?? (key === state.activeDrills[idx]?.metric && state.activeDrills[idx]?.metricType === 'counter' ? 0 : '');
+}
+
+function setDrillVal(idx, key, val) {
+  if (!state.drillData[idx]) state.drillData[idx] = {};
+  state.drillData[idx][key] = val;
+}
+
+function spaceBadgeHTML(drill, small) {
+  const sp = SPACE_INFO[drill.spaceNeeded];
+  const sz = small ? 'font-size:10px;padding:2px 7px' : 'font-size:11px;padding:3px 9px';
+  return `<span class="space-badge ${sp.cls}" style="${sz}">${sp.icon} ${drill.spaceLabel}</span>`;
+}
+
+function computeStats() {
+  const ud     = sessions.map(s => s.metrics?.up_downs).filter(v => v !== undefined);
+  const prox   = sessions.map(s => Number(s.metrics?.proximity)).filter(n => n > 0 && !isNaN(n));
+  const clock  = sessions.map(s => Number(s.metrics?.clock_dist)).filter(n => n > 0 && !isNaN(n));
+  const ladder = sessions.map(s => Number(s.metrics?.ladder_score)).filter(n => !isNaN(n));
+  return {
+    total:      sessions.length,
+    totalMins:  sessions.reduce((a,s) => a + (s.duration||0), 0),
+    bestUD:     ud.length    ? Math.max(...ud)    : null,
+    bestProx:   prox.length  ? Math.min(...prox)  : null,
+    avgUD:      ud.length    ? (ud.reduce((a,b)=>a+b,0)/ud.length).toFixed(1) : null,
+    bestClock:  clock.length ? Math.max(...clock) : null,
+    bestLadder: ladder.length? Math.max(...ladder): null,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TIMER
+// ─────────────────────────────────────────────────────────────────────────────
+function startTimer() {
+  state.timerSecs = 0;
+  clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(() => {
+    state.timerSecs++;
+    const el = document.getElementById('session-timer');
+    if (el) el.textContent = fmtTimer(state.timerSecs);
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(state.timerInterval);
+  state.timerInterval = null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────────────────────────
+function goTab(tab) {
+  state.tab = tab;
+  state.screen = 'browse';
+  render();
+}
+
+function showNav(show) {
+  document.getElementById('nav').style.display = show ? 'flex' : 'none';
+}
+
+function updateNavActive() {
+  ['plans','drills','history'].forEach(t => {
+    document.getElementById('nav-'+t).classList.toggle('active', state.tab === t && state.screen === 'browse');
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SESSION
+// ─────────────────────────────────────────────────────────────────────────────
+function startSession(planIdx) {
+  const plan = PLANS[planIdx];
+  state.activePlan    = plan;
+  state.activeDrills  = plan.drills.map(id => getDrill(id)).filter(Boolean);
+  state.currentIdx    = 0;
+  state.drillData     = {};
+  state.skipped       = {};
+  state.clubSel       = {};
+  state.screen        = 'session';
+  startTimer();
+  render();
+}
+
+function advanceDrill() {
+  if (state.currentIdx < state.activeDrills.length - 1) {
+    state.currentIdx++;
+    renderSession();
+  } else {
+    finishSession();
+  }
+}
+
+function openSkip() {
+  const drill = state.activeDrills[state.currentIdx];
+  document.getElementById('skip-drill-name').innerHTML =
+    `<strong style="color:#1a5c34">${drill.name}</strong> — tell it why so it logs correctly`;
+  document.getElementById('skip-overlay').classList.add('open');
+}
+
+function closeSkip() {
+  document.getElementById('skip-overlay').classList.remove('open');
+}
+
+function doSkip(reason) {
+  state.skipped[state.currentIdx] = reason;
+  closeSkip();
+  advanceDrill();
+}
+
+function finishSession() {
+  stopTimer();
+  const highlights = [], metrics = {};
+  let skCount = 0;
+
+  state.activeDrills.forEach((drill, i) => {
+    if (state.skipped[i]) { skCount++; return; }
+    const data = state.drillData[i] || {};
+    const val = v => data[v];
+
+    if (drill.id === 'updown'       && val('up_downs')     !== undefined) { highlights.push(`${val('up_downs')}/5 up-downs`);         metrics.up_downs     = Number(val('up_downs')); }
+    if (drill.id === 'matrix'       && val('proximity'))                  { highlights.push(`${val('proximity')}ft proximity`);        metrics.proximity    = val('proximity'); }
+    if (drill.id === 'clock'        && val('clock_dist'))                 { highlights.push(`${val('clock_dist')}ft clock`);           metrics.clock_dist   = val('clock_dist'); }
+    if (drill.id === 'backswing'    && val('backswing_10'))               { highlights.push(`Backswing 10": ${val('backswing_10')}ft`); }
+    if (drill.id === 'landing_spot' && val('landing_hits') !== undefined) { highlights.push(`${val('landing_hits')}/10 landing spot`); metrics.landing_hits = Number(val('landing_hits')); }
+    if (drill.id === 'ladder'       && val('ladder_score'))               { highlights.push(`Ladder: ${val('ladder_score')} pts`);     metrics.ladder_score = val('ladder_score'); }
+    if (drill.id === 'one_club'     && val('one_club_ud')  !== undefined) { highlights.push(`${val('one_club_ud')}/5 one-club`); }
+    if (drill.id === 'bump_run_race'&& val('bump_close')   !== undefined) { highlights.push(`${val('bump_close')}/5 bump & run`); }
+    if (drill.id === 'worst_lie'    && val('worst_ud')     !== undefined) { highlights.push(`${val('worst_ud')}/5 bad lies`); }
+    if (drill.id === 'three_ball'   && val('three_ball_ring'))            { highlights.push(`3-ball: ${val('three_ball_ring')}ft ring`); metrics.three_ball_ring = val('three_ball_ring'); }
+    if (drill.id === 'fringe_chip'  && val('fringe_close') !== undefined) { highlights.push(`${val('fringe_close')}/10 fringe`); }
+  });
+
+  const busyCount = Object.values(state.skipped).filter(r => r === 'busy').length;
+  if (busyCount > 0) highlights.push(`${busyCount} skipped — busy green`);
+  if (!highlights.length) highlights.push('Session logged');
+
+  const session = {
+    date:       new Date().toISOString(),
+    planName:   state.activePlan.name,
+    drillCount: state.activeDrills.length - skCount,
+    skipped:    skCount,
+    highlights, metrics,
+    duration:   Math.round(state.timerSecs / 60),
+  };
+  addSession(session);
+  state.lastSession = session;
+  state.screen = 'done';
+  render();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CHART (SVG, no libs)
+// ─────────────────────────────────────────────────────────────────────────────
+function renderChart(metric, label, lowerBetter) {
+  const vals = sessions.map(s => s.metrics?.[metric]).filter(v => v !== undefined && v !== null && v !== '');
+  if (vals.length < 2) return '';
+  const nums = vals.map(Number).filter(n => !isNaN(n));
+  if (nums.length < 2) return '';
+
+  const max = Math.max(...nums), min = Math.min(...nums), range = max - min || 1;
+  const W = 260, H = 52, P = 8;
+  const pts = nums.map((v, i) => {
+    const x = P + (i / (nums.length - 1)) * (W - P * 2);
+    const y = H - P - ((v - min) / range) * (H - P * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+
+  const circles = nums.map((v, i) => {
+    const x = P + (i / (nums.length - 1)) * (W - P * 2);
+    const y = H - P - ((v - min) / range) * (H - P * 2);
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5" fill="#1a5c34"/>`;
+  }).join('');
+
+  const trend = nums[nums.length - 1] - nums[0];
+  const improving = lowerBetter ? trend < 0 : trend > 0;
+  const trendColor = improving ? '#4caf72' : trend === 0 ? '#5e7a68' : '#e8527a';
+  const trendLabel = improving ? '↑ Improving' : trend === 0 ? '→ Steady' : '↓';
+
+  return `
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <span class="chart-label">${label}</span>
+      <span class="chart-trend" style="color:${trendColor}">${trendLabel}</span>
+    </div>
+    <svg width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible">
+      <polyline points="${pts}" fill="none" stroke="#1a5c34" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      ${circles}
+    </svg>
+    <div class="chart-footer">
+      <span>${nums[0]}</span>
+      <span style="color:#1a5c34">${nums[nums.length-1]}</span>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER — PLANS
+// ─────────────────────────────────────────────────────────────────────────────
+function renderPlans() {
+  const recent = sessions.slice(-5).reverse();
+  const recentHTML = recent.length ? `
+    <div class="section-label" style="margin-top:28px">Recent Sessions</div>
+    ${recent.map(s => `
+      <div class="card">
+        <div class="row-between" style="align-items:center">
+          <div>
+            <div class="serif" style="font-size:13px;color:#1a2e22">${s.planName}</div>
+            <div style="font-size:10px;color:#8aaa90;margin-top:2px">${fmtDate(s.date)} · ${s.drillCount} drills${s.skipped ? ` · ${s.skipped} skipped` : ''}</div>
+          </div>
+          <div class="row wrap gap-7" style="justify-content:flex-end;max-width:160px">
+            ${s.highlights.slice(0,2).map(h => `<span style="background:#e8f2eb;border:1px solid rgba(212,175,90,.35);border-radius:5px;padding:2px 7px;font-size:10px;color:#1a5c34">${h}</span>`).join('')}
+          </div>
+        </div>
+      </div>`).join('')}` : '';
+
+  return `
+  <div class="page-header">
+    <div class="page-title">Short Game Grind ⛳</div>
+    <div class="page-sub">Pick a plan · Log as you go · Track improvement</div>
+  </div>
+
+  <div class="row wrap gap-7" style="margin-bottom:18px">
+    <span class="space-badge space-full">⚠ Open green needed</span>
+    <span class="space-badge space-edge">◐ Edge only</span>
+    <span class="space-badge space-solo">✓ Single hole</span>
+  </div>
+
+  <div class="section-label">Session Plans</div>
+  ${PLANS.map((plan, i) => {
+    const planDrills = plan.drills.map(id => getDrill(id)).filter(Boolean);
+    const maxSpace = planDrills.some(d => d.spaceNeeded === 'full') ? 'full'
+      : planDrills.some(d => d.spaceNeeded === 'edge') ? 'edge' : 'solo';
+    const sp = SPACE_INFO[maxSpace];
+    return `
+    <div class="card clickable" onclick="startSession(${i})">
+      <div class="row-between" style="margin-bottom:5px">
+        <div class="serif" style="font-size:16px;color:#1a2e22">${plan.name}</div>
+        <span class="badge" style="font-size:10px">${plan.label}</span>
+      </div>
+      <div style="font-size:11px;color:#8aaa90;margin-bottom:7px">${planDrills.map(d=>d.name).join(' · ')}</div>
+      <span class="space-badge ${sp.cls}" style="font-size:10px;padding:2px 7px">${sp.icon} ${sp.maxLabel}</span>
+    </div>`;
+  }).join('')}
+  ${recentHTML}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER — DRILLS BROWSER
+// ─────────────────────────────────────────────────────────────────────────────
+function renderDrills() {
+  const groups = { solo:[], edge:[], full:[] };
+  DRILLS.forEach(d => groups[d.spaceNeeded].push(d));
+  const headers = {
+    solo: '✓ Works Anywhere — Single Hole',
+    edge: '◐ Edge of Green Only',
+    full: '⚠ Needs Open Green',
+  };
+  const colors = { solo:'#2e7d4f', edge:'#b8892a', full:'#c0392b' };
+
+  return `
+  <div class="page-header">
+    <div class="page-title">All Drills</div>
+    <div class="page-sub">${DRILLS.length} drills · sorted by space needed</div>
+  </div>
+  ${['solo','edge','full'].map(space => `
+    <div style="margin-bottom:24px">
+      <div class="section-label" style="color:${colors[space]};margin-bottom:12px">${headers[space]}</div>
+      ${groups[space].map(d => `
+        <div class="card">
+          <div class="row-between" style="margin-bottom:5px">
+            <div class="serif" style="font-size:15px;color:#1a2e22">${d.name}</div>
+            <div style="font-size:11px;color:#8aaa90">${d.duration} min</div>
+          </div>
+          <div style="font-size:12px;color:#8aaa90;line-height:1.65;margin-bottom:7px">${d.description}</div>
+          <div style="font-size:11px;color:#2e7d4f;line-height:1.55">💡 ${d.tip}</div>
+          <div style="font-size:10px;color:#8aaa90;margin-top:7px">Clubs: ${d.clubs.join(', ')}</div>
+        </div>`).join('')}
+    </div>`).join('')}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER — HISTORY
+// ─────────────────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const st = computeStats();
+  const tiles = [
+    { l:'Sessions',    v: st.total },
+    { l:'Total Time',  v: st.totalMins + 'm' },
+    { l:'Best U&D',    v: st.bestUD   != null ? st.bestUD+'/5'    : '—' },
+    { l:'Best Prox',   v: st.bestProx != null ? st.bestProx+'ft'  : '—' },
+    { l:'Avg U&D',     v: st.avgUD    != null ? st.avgUD+'/5'     : '—' },
+    { l:'Best Ladder', v: st.bestLadder!=null  ? st.bestLadder+' pts' : '—' },
+  ];
+
+  const sessionList = sessions.length === 0 ? `
+    <div class="center" style="padding:48px 0;color:#8aaa90;font-size:14px">No sessions yet — complete your first practice!</div>
+  ` : `
+    <div class="stat-grid">${tiles.map(t => `<div class="stat-tile"><div class="stat-label">${t.l}</div><div class="stat-value">${t.v}</div></div>`).join('')}</div>
+    <div class="section-label">Trends</div>
+    ${renderChart('up_downs',      'Up-and-downs / 5',           false)}
+    ${renderChart('proximity',     'Chipping proximity (ft)',     true)}
+    ${renderChart('clock_dist',    'Clock drill (ft)',            false)}
+    ${renderChart('landing_hits',  'Landing spot hits / 10',     false)}
+    ${renderChart('ladder_score',  'Ladder putting score',       false)}
+    ${renderChart('three_ball_ring','3-Ball putting ring (ft)',   false)}
+    <div class="section-label" style="margin-top:20px">All Sessions</div>
+    ${[...sessions].reverse().map(s => `
+      <div class="card">
+        <div class="row-between">
+          <div class="serif" style="font-size:13px;color:#1a2e22">${s.planName}</div>
+          <div style="font-size:10px;color:#8aaa90">${fmtDate(s.date)}</div>
+        </div>
+        <div style="font-size:11px;color:#8aaa90;margin-top:3px">${s.highlights.join(' · ')}</div>
+      </div>`).join('')}
+    <button class="btn-ghost btn-muted" style="width:100%;margin-top:16px" onclick="confirmClear()">Clear History</button>
+  `;
+
+  return `
+  <div class="page-header">
+    <div class="page-title">Your Progress</div>
+    <div class="page-sub">${sessions.length} session${sessions.length !== 1 ? 's' : ''} logged</div>
+  </div>
+  <div class="io-row">
+    <button class="btn-ghost" onclick="exportData()">↓ Export backup</button>
+    <button class="btn-ghost" onclick="document.getElementById('import-input').click()">↑ Import / restore</button>
+    <input id="import-input" type="file" accept=".json" style="display:none" onchange="handleImport(this)"/>
+  </div>
+  <div id="import-toast" class="toast"></div>
+  ${sessionList}`;
+}
+
+function confirmClear() {
+  if (confirm('Clear all history? Export a backup first if you want to keep it.')) {
+    sessions = [];
+    saveSessions(sessions);
+    render();
+  }
+}
+
+function handleImport(input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  importData(file).then(added => {
+    showToast(`Imported ${added} new session${added !== 1 ? 's' : ''} successfully.`, true);
+    render();
+  }).catch(err => {
+    showToast(err.message, false);
+  });
+  input.value = '';
+}
+
+function showToast(msg, ok) {
+  const el = document.getElementById('import-toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = `toast show ${ok ? 'ok' : 'err'}`;
+  setTimeout(() => { el.classList.remove('show'); }, 4000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER — SESSION
+// ─────────────────────────────────────────────────────────────────────────────
+function renderSession() {
+  const drill = state.activeDrills[state.currentIdx];
+  const idx   = state.currentIdx;
+  const total = state.activeDrills.length;
+
+  // Progress dots
+  const dots = state.activeDrills.map((_, i) => {
+    const busy = state.skipped[i] === 'busy';
+    const sk   = state.skipped[i] === 'skipped';
+    const cur  = i === idx;
+    const done = i < idx && !state.skipped[i];
+    const cls  = busy ? 'dot busy' : sk ? 'dot skip' : done ? 'dot done' : cur ? 'dot active' : 'dot';
+    const w    = cur ? 22 : 7;
+    return `<div class="${cls}" style="width:${w}px"></div>`;
+  }).join('');
+
+  // Club buttons
+  const clubs = (drill.clubs || ['52°','56°','60°','8i bump','Putter']);
+  const clubBtns = clubs.map(c => {
+    const sel = state.clubSel[idx] === c;
+    return `<button class="btn-ghost club-btn${sel ? ' selected' : ''}" onclick="selectClub(${idx},'${c.replace(/'/g,"\\'")}')">${c}</button>`;
+  }).join('');
+
+  // Metric input
+  let metricHTML;
+  if (drill.metricType === 'counter') {
+    const val = state.drillData[idx]?.[drill.metric] ?? 0;
+    metricHTML = `
+      <div class="row gap-16" style="align-items:center">
+        <button class="counter-btn" onclick="adjustCounter(${idx},'${drill.metric}',-1,${drill.metricMax||99})">−</button>
+        <div id="counter-display" class="serif" style="font-size:48px;color:#1a5c34;min-width:42px;text-align:center;line-height:1">${val}</div>
+        <button class="counter-btn" onclick="adjustCounter(${idx},'${drill.metric}',1,${drill.metricMax||99})">+</button>
+        <div style="font-size:11px;color:#8aaa90">/ ${drill.metricMax}</div>
+      </div>`;
+  } else {
+    const unit = drill.id === 'ladder' ? 'pts' : drill.id === 'three_ball' ? 'ft ring' : 'ft';
+    const val = state.drillData[idx]?.[drill.metric] || '';
+    metricHTML = `
+      <div class="row" style="gap:10px;align-items:center">
+        <input class="inp" type="number" inputmode="decimal" placeholder="—"
+          style="max-width:120px" value="${val}"
+          oninput="setDrillVal(${idx},'${drill.metric}',this.value)"/>
+        <div style="font-size:12px;color:#8aaa90">${unit}</div>
+      </div>`;
+  }
+
+  const notesVal = (state.drillData[idx]?.notes || '').replace(/"/g,'&quot;');
+
+  // Action buttons
+  const backBtn  = idx > 0 ? `<button class="btn-ghost flex-1" onclick="state.currentIdx--;renderSession()">← Back</button>` : '';
+  const skipBtn  = `<button class="btn-ghost btn-danger flex-1" onclick="openSkip()">Skip</button>`;
+  const nextBtn  = idx < total - 1
+    ? `<button class="btn flex-2 mt-0" onclick="advanceDrill()">Next →</button>`
+    : `<button class="btn btn-green flex-2 mt-0" onclick="finishSession()">Finish ✓</button>`;
+
+  document.getElementById('app').innerHTML = `
+  <div class="session-header">
+    <div class="serif" style="font-size:22px;color:#1a2e22">Session</div>
+    <div class="badge" id="session-timer">${fmtTimer(state.timerSecs)}</div>
+  </div>
+
+  <div class="row" style="gap:5px;margin-bottom:18px;align-items:center">
+    ${dots}
+    <div style="font-size:10px;color:#8aaa90;margin-left:5px">${idx+1} / ${total}</div>
+  </div>
+
+  <div class="row-between" style="margin-bottom:8px">
+    <div class="serif" style="font-size:20px;color:#1a2e22;flex:1;margin-right:10px">${drill.name}</div>
+    ${spaceBadgeHTML(drill, true)}
+  </div>
+  <div style="font-size:12px;color:#8aaa90;line-height:1.7;margin-bottom:16px">${drill.description}</div>
+
+  <div style="margin-bottom:16px">
+    <div class="section-label" style="margin-bottom:8px">Club Used</div>
+    <div class="row wrap gap-7">${clubBtns}</div>
+  </div>
+
+  <div style="margin-bottom:6px">
+    <div class="section-label" style="margin-bottom:10px">${drill.metricLabel}</div>
+    ${metricHTML}
+  </div>
+
+  <textarea class="inp" rows="2" placeholder="Notes (optional)..."
+    style="margin-top:12px;font-size:12px"
+    oninput="setDrillVal(${idx},'notes',this.value)">${notesVal}</textarea>
+
+  <div class="tip">💡 ${drill.tip}</div>
+
+  <div class="row gap-8" style="margin-top:18px">
+    ${backBtn}${skipBtn}${nextBtn}
+  </div>
+  <div class="center" style="margin-top:13px">
+    <button class="btn-ghost btn-muted" onclick="abandonSession()">Abandon session</button>
+  </div>`;
+}
+
+function adjustCounter(idx, metric, delta, max) {
+  const cur = state.drillData[idx]?.[metric] ?? 0;
+  const next = Math.max(0, Math.min(max, cur + delta));
+  setDrillVal(idx, metric, next);
+  const el = document.getElementById('counter-display');
+  if (el) el.textContent = next;
+}
+
+function selectClub(idx, club) {
+  state.clubSel[idx] = club;
+  renderSession();
+}
+
+function abandonSession() {
+  stopTimer();
+  state.screen = 'browse';
+  state.tab = 'plans';
+  render();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER — DONE
+// ─────────────────────────────────────────────────────────────────────────────
+function renderDone() {
+  const s = state.lastSession;
+  return `
+  <div style="padding:44px 0 22px;text-align:center">
+    <div style="font-size:44px;margin-bottom:10px">⛳</div>
+    <div class="serif" style="font-size:26px;color:#1a2e22;margin-bottom:4px">Session Complete</div>
+    <div style="font-size:12px;color:#8aaa90">${s.duration||'—'} min · ${s.drillCount} drills${s.skipped ? ` · ${s.skipped} skipped` : ''}</div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="section-label">What you logged</div>
+    ${s.highlights.map((h, i) => `
+      <div class="row" style="gap:9px;padding:7px 0;${i < s.highlights.length-1 ? 'border-bottom:1px solid rgba(26,58,40,.7)' : ''}">
+        <div style="width:5px;height:5px;border-radius:50%;background:#1a5c34;flex-shrink:0"></div>
+        <div style="font-size:13px;color:#1a2e22">${h}</div>
+      </div>`).join('')}
+  </div>
+  <button class="btn" onclick="goTab('plans')">Back to Plans</button>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN RENDER
+// ─────────────────────────────────────────────────────────────────────────────
+function render() {
+  updateNavActive();
+
+  if (state.screen === 'session') {
+    showNav(false);
+    renderSession();
+    return;
+  }
+
+  showNav(true);
+
+  let html = '';
+  if (state.screen === 'done')                      html = renderDone();
+  else if (state.tab === 'plans')                   html = renderPlans();
+  else if (state.tab === 'drills')                  html = renderDrills();
+  else if (state.tab === 'history')                 html = renderHistory();
+
+  document.getElementById('app').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
