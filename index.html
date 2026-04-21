@@ -3,200 +3,250 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta name="theme-color" content="#f4f7f4"/>
+<meta name="theme-color" content="#f8faf8"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="SGGrind"/>
 <title>Short Game Grind</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   /*
-   * Bright Masters Palette — light theme
-   * --bg:          #f4f7f4
-   * --surface:     #ffffff
-   * --green:       #1a5c34
-   * --green-mid:   #2e7d4f
-   * --green-light: #e8f2eb
-   * --gold:        #b8892a
-   * --text:        #1a2e22
-   * --text-mid:    #4a6652
-   * --text-faint:  #8aaa90
-   * --border:      #d0dfd3
-   * --red:         #c0392b
+   * Modern Minimal — Augusta palette
+   * --bg:           #f8faf8   near-white with green tint
+   * --surface:      #ffffff
+   * --green:        #155c35   Masters green
+   * --green-mid:    #1e7a48
+   * --green-light:  #e8f4ed
+   * --gold:         #c9a84c   Augusta gold
+   * --gold-light:   #fdf6e3
+   * --text:         #111827   near-black
+   * --text-mid:     #4b5563
+   * --text-faint:   #9ca3af
+   * --border:       #e5e7eb
+   * --red:          #dc2626
+   * --red-light:    #fef2f2
    */
 
   *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
   body {
-    background: #f4f7f4;
-    color: #1a2e22;
-    font-family: 'Source Sans 3', sans-serif;
+    background: #f8faf8;
+    color: #111827;
+    font-family: 'Inter', -apple-system, sans-serif;
     min-height: 100svh;
     overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
   }
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
   input[type=number] { -moz-appearance: textfield; }
-  button:active { opacity: 0.8; }
-  .serif { font-family: 'Playfair Display', serif; }
+  button:active { opacity: 0.75; transform: scale(0.98); }
+  .serif { font-family: 'Inter', sans-serif; font-weight: 800; }
 
-  #app { max-width: 480px; margin: 0 auto; padding: 0 18px 80px; }
+  #app { max-width: 480px; margin: 0 auto; padding: 0 16px 88px; }
 
-  /* ── Nav ── */
+  /* ── Nav — white bar, indicator dot on active ── */
   #nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: #ffffff; border-top: 2px solid #d0dfd3;
+    background: #ffffff; border-top: 1px solid #e5e7eb;
     display: flex; z-index: 50;
-    box-shadow: 0 -2px 16px rgba(26,92,52,.08);
   }
   #nav button {
-    flex: 1; background: transparent; border: none; border-top: 3px solid transparent;
-    color: #8aaa90; font-family: 'Source Sans 3', sans-serif; font-size: 10px;
-    padding: 10px 0 12px; cursor: pointer; letter-spacing: .06em; text-transform: uppercase;
-    transition: color .2s; margin-top: -2px;
+    flex: 1; background: transparent; border: none; border-top: 2px solid transparent;
+    color: #9ca3af; font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 500;
+    padding: 10px 2px 12px; cursor: pointer; letter-spacing: .04em; text-transform: uppercase;
+    transition: color .15s; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    margin-top: -1px;
   }
-  #nav button.active { color: #1a5c34; border-top-color: #1a5c34; font-weight: 600; }
+  #nav button::before {
+    content: ''; display: block; width: 4px; height: 4px; border-radius: 50%;
+    background: transparent; transition: background .15s; margin-bottom: 1px;
+  }
+  #nav button.active { color: #155c35; }
+  #nav button.active::before { background: #155c35; }
 
   /* ── Cards ── */
   .card {
-    background: #ffffff; border: 1px solid #d0dfd3;
-    border-radius: 12px; padding: 16px; margin-bottom: 9px;
-    box-shadow: 0 1px 4px rgba(26,92,52,.06);
+    background: #ffffff; border: 1px solid #e5e7eb;
+    border-radius: 16px; padding: 16px; margin-bottom: 10px;
   }
-  .card.clickable { cursor: pointer; transition: box-shadow .18s, border-color .18s, transform .1s; }
-  .card.clickable:hover { border-color: #2e7d4f; box-shadow: 0 3px 12px rgba(26,92,52,.12); transform: translateY(-1px); }
+  .card.clickable { cursor: pointer; transition: border-color .15s, transform .1s; }
+  .card.clickable:hover { border-color: #155c35; transform: translateY(-1px); }
   .card.clickable:active { transform: translateY(0); }
 
+  /* ── Hero card — the signature Modern Minimal element ── */
+  .hero-card {
+    background: #155c35; border-radius: 20px; padding: 20px;
+    margin-bottom: 14px; position: relative; overflow: hidden;
+  }
+  .hero-card::before {
+    content: ''; position: absolute; top: -32px; right: -32px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(201,168,76,.12);
+  }
+  .hero-card::after {
+    content: ''; position: absolute; bottom: -48px; left: -24px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.04);
+  }
+  .hero-label { font-size: 11px; font-weight: 500; color: rgba(255,255,255,.55); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+  .hero-score { font-size: 52px; font-weight: 800; color: #c9a84c; line-height: 1; }
+  .hero-of { font-size: 18px; font-weight: 500; color: rgba(255,255,255,.35); }
+  .hero-sub { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 6px; }
+  .hero-grade {
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(201,168,76,.2); border: 1px solid rgba(201,168,76,.4);
+    color: #c9a84c; font-size: 11px; font-weight: 600; padding: 4px 10px;
+    border-radius: 20px; letter-spacing: .04em;
+  }
+
+  /* ── Section label ── */
   .section-label {
-    font-family: 'Playfair Display', serif; font-size: 10px; letter-spacing: .2em;
-    text-transform: uppercase; color: #8aaa90; margin-bottom: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; color: #9ca3af; margin-bottom: 10px;
   }
+
+  /* ── Badge (timer etc) ── */
   .badge {
-    background: #fdf4e0; border: 1px solid #d4a843;
-    border-radius: 18px; padding: 3px 11px; font-size: 11px; color: #b8892a;
-    letter-spacing: .06em; white-space: nowrap; font-weight: 600;
+    background: #fdf6e3; border: 1px solid rgba(201,168,76,.4);
+    border-radius: 20px; padding: 4px 12px; font-size: 11px; color: #c9a84c;
+    font-weight: 600; white-space: nowrap;
   }
+
+  /* ── Tip ── */
   .tip {
-    background: #e8f2eb; border: 1px solid #b0d4bc;
-    border-radius: 9px; padding: 10px 13px; font-size: 12px;
-    color: #2e5c3a; line-height: 1.65; margin-top: 13px;
+    background: #e8f4ed; border-radius: 12px; padding: 12px 14px;
+    font-size: 12px; color: #155c35; line-height: 1.65; margin-top: 12px;
+    font-weight: 500;
   }
+
+  /* ── Pill stat boxes (chip/pitch/flop) ── */
+  .pill-stat-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .pill-stat {
+    flex: 1; border-radius: 14px; padding: 12px 8px; text-align: center;
+  }
+  .pill-stat-val { font-size: 22px; font-weight: 800; line-height: 1; }
+  .pill-stat-lbl { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; opacity: .7; }
+  .pill-green { background: #e8f4ed; }
+  .pill-green .pill-stat-val { color: #155c35; }
+  .pill-green .pill-stat-lbl { color: #155c35; }
+  .pill-gold  { background: #fdf6e3; }
+  .pill-gold  .pill-stat-val { color: #c9a84c; }
+  .pill-gold  .pill-stat-lbl { color: #c9a84c; }
+  .pill-red   { background: #fef2f2; }
+  .pill-red   .pill-stat-val { color: #dc2626; }
+  .pill-red   .pill-stat-lbl { color: #dc2626; }
 
   /* ── Buttons ── */
   .btn {
-    background: #1a5c34; color: #ffffff; border: none; border-radius: 10px;
-    padding: 14px 22px; font-size: 13px; font-weight: 700;
-    font-family: 'Source Sans 3', sans-serif; cursor: pointer;
-    letter-spacing: .1em; text-transform: uppercase; width: 100%; margin-top: 16px;
-    box-shadow: 0 2px 10px rgba(26,92,52,.3);
-    transition: background .15s, box-shadow .15s;
+    background: #155c35; color: #ffffff; border: none; border-radius: 12px;
+    padding: 15px 22px; font-size: 14px; font-weight: 700;
+    font-family: 'Inter', sans-serif; cursor: pointer;
+    letter-spacing: .02em; width: 100%; margin-top: 14px;
+    transition: background .15s;
   }
-  .btn:hover { background: #2e7d4f; }
-  .btn-green { background: #2e7d4f; }
+  .btn:hover { background: #1e7a48; }
+  .btn-green { background: #1e7a48; }
   .btn-ghost {
-    background: #ffffff; color: #4a6652; border: 1px solid #d0dfd3;
-    border-radius: 10px; padding: 10px 14px; font-size: 12px;
-    cursor: pointer; font-family: 'Source Sans 3', sans-serif;
-    transition: border-color .15s, color .15s, background .15s;
+    background: #ffffff; color: #4b5563; border: 1px solid #e5e7eb;
+    border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    transition: border-color .15s, background .15s;
   }
-  .btn-ghost:hover { border-color: #2e7d4f; color: #1a5c34; background: #f0f8f2; }
-  .btn-danger { color: #c0392b; border-color: rgba(192,57,43,.35); background: #fff5f5; }
-  .btn-muted { border: none; font-size: 11px; color: #aabfb0; background: transparent; }
+  .btn-ghost:hover { border-color: #155c35; background: #f8faf8; }
+  .btn-danger { color: #dc2626; border-color: rgba(220,38,38,.3); background: #fef2f2; }
+  .btn-muted { border: none; font-size: 12px; color: #9ca3af; background: transparent; }
 
   /* ── Inputs ── */
   .inp {
-    background: #f4f7f4; border: 1.5px solid #d0dfd3;
-    border-radius: 8px; padding: 10px 13px; font-size: 16px;
-    color: #1a2e22; font-family: 'Source Sans 3', sans-serif; width: 100%;
+    background: #f9fafb; border: 1.5px solid #e5e7eb;
+    border-radius: 10px; padding: 11px 14px; font-size: 16px;
+    color: #111827; font-family: 'Inter', sans-serif; width: 100%;
     transition: border-color .15s, background .15s;
   }
-  .inp:focus { outline: none; border-color: #2e7d4f; background: #ffffff; }
+  .inp:focus { outline: none; border-color: #155c35; background: #ffffff; }
   textarea.inp { resize: none; }
 
   .counter-btn {
-    background: #eef3ee; border: 1.5px solid #b8d4c0;
-    border-radius: 8px; width: 48px; height: 48px; font-size: 24px;
-    color: #1a5c34; cursor: pointer; display: flex; align-items: center;
-    justify-content: center; flex-shrink: 0; font-family: 'Source Sans 3', sans-serif;
-    transition: background .15s, border-color .15s;
+    background: #f3f4f6; border: 1.5px solid #e5e7eb;
+    border-radius: 12px; width: 52px; height: 52px; font-size: 26px; font-weight: 300;
+    color: #155c35; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; font-family: 'Inter', sans-serif;
+    transition: background .15s;
   }
-  .counter-btn:hover { background: #daeede; border-color: #2e7d4f; }
+  .counter-btn:hover { background: #e8f4ed; border-color: #155c35; }
 
   /* ── Space badges ── */
   .space-badge {
     display: inline-flex; align-items: center; gap: 4px;
-    border-radius: 6px; padding: 3px 8px; font-size: 10px; white-space: nowrap;
-    letter-spacing: .03em; font-weight: 600;
+    border-radius: 8px; padding: 3px 9px; font-size: 10px; white-space: nowrap;
+    letter-spacing: .02em; font-weight: 600;
   }
-  .space-full  { background: #fdf0ee; border: 1px solid #e8a090; color: #c0392b; }
-  .space-edge  { background: #fdf4e0; border: 1px solid #d4a843; color: #b8892a; }
-  .space-solo  { background: #e8f2eb; border: 1px solid #7abf8e; color: #1a5c34; }
+  .space-full  { background: #fef2f2; border: 1px solid rgba(220,38,38,.3);  color: #dc2626; }
+  .space-edge  { background: #fdf6e3; border: 1px solid rgba(201,168,76,.4); color: #c9a84c; }
+  .space-solo  { background: #e8f4ed; border: 1px solid rgba(21,92,53,.25);  color: #155c35; }
 
   /* ── Club buttons ── */
-  .club-btn { padding: 6px 12px; font-size: 12px; }
-  .club-btn.selected { background: #e8f2eb; color: #1a5c34; border-color: #2e7d4f; font-weight: 600; }
+  .club-btn { padding: 7px 14px; font-size: 12px; font-weight: 500; border-radius: 8px; }
+  .club-btn.selected { background: #e8f4ed; color: #155c35; border-color: #155c35; font-weight: 600; }
 
   /* ── Progress dots ── */
-  .dot { height: 7px; border-radius: 4px; background: #d0dfd3; transition: all .28s; }
-  .dot.done   { background: #1a5c34; }
-  .dot.active { background: #2e7d4f; }
-  .dot.busy   { background: #e8a090; }
-  .dot.skip   { background: #d0dfd3; }
+  .dot { height: 6px; border-radius: 3px; background: #e5e7eb; transition: all .25s; }
+  .dot.done   { background: #155c35; }
+  .dot.active { background: #1e7a48; }
+  .dot.busy   { background: #fca5a5; }
+  .dot.skip   { background: #e5e7eb; }
 
   /* ── Skip overlay ── */
   #skip-overlay {
-    position: fixed; inset: 0; background: rgba(26,46,34,.5);
+    position: fixed; inset: 0; background: rgba(0,0,0,.4);
     z-index: 200; display: none; align-items: flex-end; justify-content: center;
-    backdrop-filter: blur(3px);
   }
   #skip-overlay.open { display: flex; }
   #skip-sheet {
-    background: #ffffff; border: 1px solid #d0dfd3; border-top: 3px solid #1a5c34;
-    border-radius: 18px 18px 0 0; padding: 26px 22px 44px;
+    background: #ffffff; border-top: 3px solid #155c35;
+    border-radius: 20px 20px 0 0; padding: 24px 20px 44px;
     width: 100%; max-width: 480px;
-    box-shadow: 0 -8px 32px rgba(26,92,52,.15);
   }
   .skip-option {
-    border-radius: 10px; padding: 13px 16px; font-size: 13px;
-    cursor: pointer; font-family: 'Source Sans 3', sans-serif; text-align: left;
-    line-height: 1.5; width: 100%; margin-bottom: 9px;
+    border-radius: 12px; padding: 14px 16px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: 'Inter', sans-serif; text-align: left;
+    line-height: 1.5; width: 100%; margin-bottom: 8px;
   }
-  .skip-busy  { background: #fff5f5; border: 1px solid #e8a090; color: #c0392b; }
-  .skip-today { background: #f4f7f4; border: 1px solid #d0dfd3; color: #4a6652; }
+  .skip-busy  { background: #fef2f2; border: 1px solid rgba(220,38,38,.3); color: #dc2626; }
+  .skip-today { background: #f9fafb; border: 1px solid #e5e7eb; color: #4b5563; }
 
   /* ── Stat tiles ── */
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 22px; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
   .stat-tile {
-    background: #ffffff; border: 1px solid #d0dfd3;
-    border-radius: 11px; padding: 13px 15px;
-    box-shadow: 0 1px 4px rgba(26,92,52,.05);
+    background: #ffffff; border: 1px solid #e5e7eb;
+    border-radius: 14px; padding: 14px 16px;
   }
-  .stat-label { font-size: 10px; color: #8aaa90; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 5px; }
-  .stat-value { font-family: 'Playfair Display', serif; font-size: 22px; color: #1a5c34; }
+  .stat-label { font-size: 10px; color: #9ca3af; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; font-weight: 600; }
+  .stat-value { font-size: 24px; font-weight: 800; color: #155c35; }
 
   /* ── Chart ── */
   .chart-wrap {
-    background: #ffffff; border: 1px solid #d0dfd3;
-    border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;
-    box-shadow: 0 1px 4px rgba(26,92,52,.05);
+    background: #ffffff; border: 1px solid #e5e7eb;
+    border-radius: 14px; padding: 14px; margin-bottom: 10px;
   }
-  .chart-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
-  .chart-label { font-size: 10px; color: #8aaa90; letter-spacing: .1em; text-transform: uppercase; }
-  .chart-trend { font-size: 10px; font-weight: 600; }
-  .chart-footer { display: flex; justify-content: space-between; font-size: 10px; color: #aabfb0; margin-top: 2px; }
+  .chart-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .chart-label { font-size: 11px; color: #9ca3af; letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
+  .chart-trend { font-size: 11px; font-weight: 700; }
+  .chart-footer { display: flex; justify-content: space-between; font-size: 10px; color: #d1d5db; margin-top: 4px; }
 
   /* ── Toast / IO ── */
-  .io-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .io-row { display: flex; gap: 8px; margin-bottom: 18px; }
   .io-row .btn-ghost { flex: 1; font-size: 12px; }
-  .toast { border-radius: 9px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; display: none; }
+  .toast { border-radius: 12px; padding: 12px 14px; font-size: 13px; margin-bottom: 14px; display: none; font-weight: 500; }
   .toast.show { display: block; }
-  .toast.ok  { background: #e8f2eb; border: 1px solid #7abf8e; color: #1a5c34; }
-  .toast.err { background: #fff5f5; border: 1px solid #e8a090; color: #c0392b; }
+  .toast.ok  { background: #e8f4ed; color: #155c35; }
+  .toast.err { background: #fef2f2; color: #dc2626; }
 
   /* ── Page header ── */
-  .page-header { padding: 28px 0 20px; border-bottom: 2px solid #d0dfd3; margin-bottom: 20px; }
-  .page-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #1a2e22; }
-  .page-sub { font-size: 12px; color: #8aaa90; margin-top: 4px; letter-spacing: .04em; }
+  .page-header { padding: 28px 0 18px; border-bottom: 1px solid #e5e7eb; margin-bottom: 20px; }
+  .page-title { font-size: 28px; font-weight: 800; color: #111827; }
+  .page-sub { font-size: 13px; color: #9ca3af; margin-top: 3px; font-weight: 400; }
 
   /* ── Session header ── */
   .session-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 0 14px; }
@@ -213,97 +263,90 @@
   .mt-0 { margin-top: 0; }
   .center { text-align: center; }
 
-  /* ── Games specific ── */
-
-  /* 9-Hole score buttons: 0, 1, 2 */
+  /* ── Score buttons (0/1/2) ── */
   .score-btns { display: flex; gap: 8px; }
   .score-btn {
-    flex: 1; height: 52px; border-radius: 10px; font-size: 22px; font-weight: 700;
-    font-family: 'Playfair Display', serif; border: 2px solid #d0dfd3;
-    background: #ffffff; color: #8aaa90; cursor: pointer;
-    transition: all .15s;
+    flex: 1; height: 56px; border-radius: 12px; font-size: 24px; font-weight: 800;
+    font-family: 'Inter', sans-serif; border: 2px solid #e5e7eb;
+    background: #f9fafb; color: #d1d5db; cursor: pointer; transition: all .12s;
   }
-  .score-btn:hover { border-color: #2e7d4f; color: #2e7d4f; }
-  .score-btn.sel-0 { background: #fff5f5; border-color: #c0392b; color: #c0392b; }
-  .score-btn.sel-1 { background: #fdf4e0; border-color: #b8892a; color: #b8892a; }
-  .score-btn.sel-2 { background: #e8f2eb; border-color: #1a5c34; color: #1a5c34; }
+  .score-btn:hover { border-color: #155c35; color: #155c35; background: #f0faf4; }
+  .score-btn.sel-0 { background: #fef2f2; border-color: #dc2626; color: #dc2626; }
+  .score-btn.sel-1 { background: #fdf6e3; border-color: #c9a84c; color: #c9a84c; }
+  .score-btn.sel-2 { background: #e8f4ed; border-color: #155c35; color: #155c35; }
 
-  /* Ladder 0/1 buttons */
+  /* ── Ladder 0/1 buttons ── */
   .ladder-btn {
-    flex: 1; height: 52px; border-radius: 10px; font-size: 16px; font-weight: 700;
-    font-family: 'Source Sans 3', sans-serif; border: 2px solid #d0dfd3;
-    background: #ffffff; color: #8aaa90; cursor: pointer;
-    transition: all .15s; letter-spacing: .05em;
+    flex: 1; height: 52px; border-radius: 12px; font-size: 18px; font-weight: 700;
+    font-family: 'Inter', sans-serif; border: 2px solid #e5e7eb;
+    background: #f9fafb; color: #d1d5db; cursor: pointer; transition: all .12s;
   }
-  .ladder-btn:hover { border-color: #2e7d4f; color: #2e7d4f; }
-  .ladder-btn.sel-0 { background: #fff5f5; border-color: #c0392b; color: #c0392b; }
-  .ladder-btn.sel-1 { background: #e8f2eb; border-color: #1a5c34; color: #1a5c34; }
+  .ladder-btn:hover { border-color: #155c35; color: #155c35; background: #f0faf4; }
+  .ladder-btn.sel-0 { background: #fef2f2; border-color: #dc2626; color: #dc2626; }
+  .ladder-btn.sel-1 { background: #e8f4ed; border-color: #155c35; color: #155c35; }
 
-  /* Hole row in 9-hole game */
+  /* ── Hole row ── */
   .hole-row {
-    background: #ffffff; border: 1px solid #d0dfd3; border-radius: 12px;
+    background: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px;
     padding: 13px 14px; margin-bottom: 8px;
-    box-shadow: 0 1px 3px rgba(26,92,52,.05);
   }
   .hole-num {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: #1a5c34; color: #fff; font-size: 12px; font-weight: 700;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #155c35; color: #fff; font-size: 12px; font-weight: 700;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .shot-type-pill {
-    font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
-    padding: 2px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 20px;
   }
-  .pill-chip  { background: #e8f2eb; color: #1a5c34; }
-  .pill-pitch { background: #fdf4e0; color: #b8892a; }
-  .pill-flop  { background: #fdf0ee; color: #c0392b; }
+  .pill-chip  { background: #e8f4ed; color: #155c35; }
+  .pill-pitch { background: #fdf6e3; color: #c9a84c; }
+  .pill-flop  { background: #fef2f2; color: #dc2626; }
 
-  /* Score summary ring */
+  /* ── Score ring (game done) ── */
   .score-ring {
-    width: 80px; height: 80px; border-radius: 50%;
-    border: 4px solid #1a5c34; display: flex; flex-direction: column;
+    width: 88px; height: 88px; border-radius: 50%;
+    background: #155c35; display: flex; flex-direction: column;
     align-items: center; justify-content: center; margin: 0 auto 6px;
   }
-  .score-ring-val { font-family: 'Playfair Display', serif; font-size: 28px; color: #1a5c34; line-height: 1; }
-  .score-ring-max { font-size: 11px; color: #8aaa90; }
+  .score-ring-val { font-size: 32px; font-weight: 800; color: #c9a84c; line-height: 1; }
+  .score-ring-max { font-size: 11px; color: rgba(255,255,255,.5); font-weight: 500; }
 
-  /* Ladder shot row */
+  /* ── Ladder row ── */
   .ladder-row {
-    background: #ffffff; border: 1px solid #d0dfd3; border-radius: 10px;
-    padding: 11px 14px; margin-bottom: 7px;
+    background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 7px;
     display: flex; align-items: center; gap: 12px;
   }
   .ladder-shot-num {
-    width: 24px; height: 24px; border-radius: 50%;
+    width: 26px; height: 26px; border-radius: 50%;
     font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .ladder-shot-num.club-8i   { background: #e8f2eb; color: #1a5c34; }
-  .ladder-shot-num.club-52   { background: #fdf4e0; color: #b8892a; }
+  .ladder-shot-num.club-8i { background: #e8f4ed; color: #155c35; }
+  .ladder-shot-num.club-52 { background: #fdf6e3; color: #c9a84c; }
 
-  /* Game history entry type badge */
+  /* ── Game type badge ── */
   .game-type-badge {
-    font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
-    letter-spacing: .05em;
+    font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px; letter-spacing: .04em;
   }
-  .gtb-nine  { background: #e8f2eb; color: #1a5c34; }
-  .gtb-ladder{ background: #fdf4e0; color: #b8892a; }
+  .gtb-nine   { background: #e8f4ed; color: #155c35; }
+  .gtb-ladder { background: #fdf6e3; color: #c9a84c; }
 
-  /* Practice library card */
+  /* ── Practice card ── */
   .practice-card {
-    background: #ffffff; border: 1px solid #d0dfd3; border-radius: 12px;
-    padding: 15px 16px; margin-bottom: 9px;
-    box-shadow: 0 1px 4px rgba(26,92,52,.05);
+    background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px;
+    padding: 16px; margin-bottom: 10px;
   }
   .practice-tag {
-    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
-    padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 6px;
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
+    padding: 3px 9px; border-radius: 20px; display: inline-block; margin-bottom: 8px;
   }
-  .ptag-putting  { background: #e8f2eb; color: #1a5c34; }
-  .ptag-chipping { background: #fdf4e0; color: #b8892a; }
-  .ptag-pitching { background: #fdf0ee; color: #c0392b; }
+  .ptag-putting  { background: #e8f4ed; color: #155c35; }
+  .ptag-chipping { background: #fdf6e3; color: #c9a84c; }
+  .ptag-pitching { background: #fef2f2; color: #dc2626; }
   .ptag-bunker   { background: #f0eef8; color: #6b5ea8; }
-  .ptag-mental   { background: #eef5fb; color: #2980b9; }
+  .ptag-mental   { background: #eff6ff; color: #2563eb; }
 </style>
 </head>
 <body>
@@ -311,18 +354,17 @@
 <div id="app"></div>
 
 <div id="nav">
-  <button id="nav-games"   onclick="goTab('games')"  >🏆 Games</button>
-  <button id="nav-plans"   onclick="goTab('plans')"  >⛳ Plans</button>
-  <button id="nav-drills"  onclick="goTab('drills')" >📋 Drills</button>
-  <button id="nav-practice" onclick="goTab('practice')">💡 Practice</button>
-  <button id="nav-history" onclick="goTab('history')">📈 History</button>
+  <button id="nav-games"    onclick="goTab('games')"   >Games</button>
+  <button id="nav-drills"   onclick="goTab('drills')"  >Drills</button>
+  <button id="nav-practice" onclick="goTab('practice')">Practice</button>
+  <button id="nav-history"  onclick="goTab('history')" >History</button>
 </div>
 
 <!-- Skip overlay (for session drills) -->
 <div id="skip-overlay" onclick="closeSkip()">
   <div id="skip-sheet" onclick="event.stopPropagation()">
-    <div class="serif" style="font-size:19px;color:#1a2e22;margin-bottom:4px">Skip this drill?</div>
-    <div id="skip-drill-name" style="font-size:12px;color:#8aaa90;margin-bottom:18px"></div>
+    <div class="serif" style="font-size:19px;color:#111827;margin-bottom:4px">Skip this drill?</div>
+    <div id="skip-drill-name" style="font-size:12px;color:#9ca3af;margin-bottom:18px"></div>
     <button class="skip-option skip-busy" onclick="doSkip('busy')">
       🚶 <strong>Green is busy</strong><br>
       <span style="font-size:11px;opacity:.8">Other people on the green, can't do this right now</span>
@@ -342,27 +384,45 @@
 
 // 9-Hole game: 3 chip & run, 3 pitch, 3 flop — arranged in alternating order
 const NINE_HOLES = [
-  { hole:1, type:'chip',  label:'Chip & Run',  desc:'Tight lie, just off the fringe. Land it 2–3 ft on, let it run to the pin.',       pill:'pill-chip'  },
-  { hole:2, type:'pitch', label:'Pitch Shot',  desc:'15–20 yds out, some loft needed. Land it soft past a slope or hazard.',            pill:'pill-pitch' },
-  { hole:3, type:'flop',  label:'Flop Shot',   desc:'Ball is close to the green but you need height fast. Open face, full swing.',      pill:'pill-flop'  },
-  { hole:4, type:'chip',  label:'Chip & Run',  desc:'Uphill lie, ball sitting up. Hood the 8-iron, let it bump and release.',           pill:'pill-chip'  },
-  { hole:5, type:'pitch', label:'Pitch Shot',  desc:'20–25 yds, elevated green. Pick a landing spot 3 ft onto the surface.',            pill:'pill-pitch' },
-  { hole:6, type:'flop',  label:'Flop Shot',   desc:'Tight downhill lie with little green to work with. Commit and accelerate.',         pill:'pill-flop'  },
-  { hole:7, type:'chip',  label:'Chip & Run',  desc:'From the rough, ball sitting down. Use the 56° with a firm, punchy stroke.',       pill:'pill-chip'  },
-  { hole:8, type:'pitch', label:'Pitch Shot',  desc:'Side-hill lie, ball below your feet. Choke down and aim left of target.',          pill:'pill-pitch' },
-  { hole:9, type:'flop',  label:'Flop Shot',   desc:'Final hole — hardest lie you can find. Buried in rough, green sloping away.',      pill:'pill-flop'  },
+  { hole:1, type:'chip',  label:'Chip & Run',
+    desc:'Just off the fringe, 10 yds. Bump it on with the 8-iron and let it release to the pin.',
+    pill:'pill-chip' },
+  { hole:2, type:'pitch', label:'Pitch Shot',
+    desc:'18 yds, tight lie in front of a bunker. Carry it cleanly over the bunker and stop it on the green.',
+    pill:'pill-pitch' },
+  { hole:3, type:'flop',  label:'Flop / High Pitch',
+    desc:'Latrobe shot — short-sided with no green to work with. Flop it or hit a high soft pitch, your call. Get it on.',
+    pill:'pill-flop' },
+  { hole:4, type:'chip',  label:'Chip & Run',
+    desc:'Ball sitting up in light rough, 12 yds. Chip and run with the 8-iron — aim for a spot 3 ft on.',
+    pill:'pill-chip' },
+  { hole:5, type:'pitch', label:'Pitch Shot',
+    desc:'22 yds over a front bunker to a tight pin. Carry the bunker, land it soft, trust your loft.',
+    pill:'pill-pitch' },
+  { hole:6, type:'flop',  label:'Flop / High Pitch',
+    desc:'Latrobe tight uphill shot — steep bank in front. Go high or flop it. The green is receptive if you carry the slope.',
+    pill:'pill-flop' },
+  { hole:7, type:'chip',  label:'Chip & Run',
+    desc:'Fringe chip, 8 yds. Ball sitting clean. Pick the line, commit to a landing spot 2 ft on, let it run out.',
+    pill:'pill-chip' },
+  { hole:8, type:'pitch', label:'Pitch Shot',
+    desc:'25 yds, hitting from a firm fairway lie. Pick a landing spot short of the pin and let the green do the work.',
+    pill:'pill-pitch' },
+  { hole:9, type:'flop',  label:'Flop / High Pitch',
+    desc:'Last hole — Latrobe style. Tight uphill pitch to a small green. Flop or punch-high. Make it count.',
+    pill:'pill-flop' },
 ];
 
 // Ladder game: 4 shots with 8i, 4 shots with 52°
 const LADDER_SHOTS = [
-  { idx:0, club:'8i',  clubLabel:'8-Iron',   desc:'10 yds — bump and run from just off the edge. Land 2 ft on, run to hole.' },
-  { idx:1, club:'8i',  clubLabel:'8-Iron',   desc:'15 yds — straight uphill. Hood the face slightly, smooth tempo.' },
-  { idx:2, club:'8i',  clubLabel:'8-Iron',   desc:'20 yds — across a slope. Play to the high side, let it feed down.' },
-  { idx:3, club:'8i',  clubLabel:'8-Iron',   desc:'25 yds — slight downhill. Use less swing, let the slope do the work.' },
-  { idx:4, club:'52',  clubLabel:'52° Wedge', desc:'10 yds — tight lie, minimum loft. Hands forward, dead-hands impact.' },
-  { idx:5, club:'52',  clubLabel:'52° Wedge', desc:'15 yds — fluffy lie. Normal setup, trust the loft to pop it out.' },
-  { idx:6, club:'52',  clubLabel:'52° Wedge', desc:'20 yds — from the rough collar. Firm grip, steeper angle of attack.' },
-  { idx:7, club:'52',  clubLabel:'52° Wedge', desc:'25 yds — hardest shot. Pick a landing spot 1/3 of the way, commit fully.' },
+  { idx:0, club:'8i',  clubLabel:'8-Iron',    desc:'Shot 1 — 10 yds. Bump it on, land 2 ft on the green and let it run.' },
+  { idx:1, club:'8i',  clubLabel:'8-Iron',    desc:'Shot 2 — 15 yds. Firm chip, aim for a spot just on the green.' },
+  { idx:2, club:'8i',  clubLabel:'8-Iron',    desc:'Shot 3 — 20 yds. Longer bump and run. Pick your landing spot, commit.' },
+  { idx:3, club:'8i',  clubLabel:'8-Iron',    desc:'Shot 4 — 25 yds. Full bump and run. Land short, trust the run-out.' },
+  { idx:4, club:'52',  clubLabel:'52° Wedge', desc:'Shot 5 — 10 yds. Short pitch with the wedge. Clean contact, soft landing.' },
+  { idx:5, club:'52',  clubLabel:'52° Wedge', desc:'Shot 6 — 15 yds. Mid-range pitch. Pick a landing spot, accelerate through.' },
+  { idx:6, club:'52',  clubLabel:'52° Wedge', desc:'Shot 7 — 20 yds. Pitch to a tight pin. Land it, let the spin do the work.' },
+  { idx:7, club:'52',  clubLabel:'52° Wedge', desc:'Shot 8 — 25 yds. Longest shot in the ladder. Commit fully to your landing spot.' },
 ];
 
 // Practice library
@@ -614,7 +674,7 @@ function goTab(tab) { state.tab = tab; state.screen = 'browse'; render(); }
 function showNav(show) { document.getElementById('nav').style.display = show ? 'flex' : 'none'; }
 
 function updateNavActive() {
-  ['games','plans','drills','practice','history'].forEach(t => {
+  ['games','drills','practice','history'].forEach(t => {
     const el = document.getElementById('nav-'+t);
     if (el) el.classList.toggle('active', state.tab === t && state.screen === 'browse');
   });
@@ -744,7 +804,7 @@ function advanceDrill() {
 function openSkip() {
   const drill = state.activeDrills[state.currentIdx];
   document.getElementById('skip-drill-name').innerHTML =
-    `<strong style="color:#1a5c34">${drill.name}</strong> — tell us why so it logs correctly`;
+    `<strong style="color:#155c35">${drill.name}</strong> — tell us why so it logs correctly`;
   document.getElementById('skip-overlay').classList.add('open');
 }
 function closeSkip() { document.getElementById('skip-overlay').classList.remove('open'); }
@@ -836,11 +896,11 @@ function renderChart(data, label, lowerBetter) {
   const circles = nums.map((v,i) => {
     const x = P + (i/(nums.length-1))*(W-P*2);
     const y = H-P-((v-min)/range)*(H-P*2);
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5" fill="#1a5c34"/>`;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5" fill="#155c35"/>`;
   }).join('');
   const trend = nums[nums.length-1]-nums[0];
   const improving = lowerBetter ? trend<0 : trend>0;
-  const trendColor = improving ? '#2e7d4f' : trend===0 ? '#aabfb0' : '#c0392b';
+  const trendColor = improving ? '#1e7a48' : trend===0 ? '#aabfb0' : '#dc2626';
   const trendLabel = improving ? '↑ Improving' : trend===0 ? '→ Steady' : '↓ Declining';
   return `
   <div class="chart-wrap">
@@ -849,10 +909,10 @@ function renderChart(data, label, lowerBetter) {
       <span class="chart-trend" style="color:${trendColor}">${trendLabel}</span>
     </div>
     <svg width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible">
-      <polyline points="${pts}" fill="none" stroke="#1a5c34" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="${pts}" fill="none" stroke="#155c35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       ${circles}
     </svg>
-    <div class="chart-footer"><span>${nums[0]}</span><span style="color:#1a5c34">${nums[nums.length-1]}</span></div>
+    <div class="chart-footer"><span>${nums[0]}</span><span style="color:#155c35">${nums[nums.length-1]}</span></div>
   </div>`;
 }
 
@@ -860,86 +920,93 @@ function renderChart(data, label, lowerBetter) {
 // RENDER — GAMES HUB
 // ─────────────────────────────────────────────────────────────────────────────
 function renderGames() {
-  const recentGames = [...games].reverse().slice(0,5);
+  const recentGames = [...games].reverse().slice(0,6);
   const nineGs   = games.filter(g=>g.type==='nine');
   const ladderGs = games.filter(g=>g.type==='ladder');
-
-  // Personal bests
   const bestNine   = nineGs.length   ? Math.max(...nineGs.map(g=>g.total))   : null;
   const bestLadder = ladderGs.length ? Math.max(...ladderGs.map(g=>g.total)) : null;
+  const avgNine    = nineGs.length   ? (nineGs.reduce((a,g)=>a+g.total,0)/nineGs.length).toFixed(1) : null;
+
+  // score dot helper
+  function dot(score, max) {
+    if (score===null||score===undefined) return `<span style="color:#e5e7eb;font-size:13px">—</span>`;
+    const bg = max===2 ? (score===2?'#155c35':score===1?'#c9a84c':'#dc2626') : (score===1?'#155c35':'#dc2626');
+    return `<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:${bg};color:#fff;font-size:11px;font-weight:700">${score}</span>`;
+  }
 
   const recentHTML = recentGames.length ? `
     <div class="section-label" style="margin-top:24px">Recent Games</div>
     ${recentGames.map(g => {
-      const isNine = g.type === 'nine';
-      return `<div class="card">
-        <div class="row-between" style="align-items:center">
-          <div>
-            <div style="margin-bottom:4px">
-              <span class="game-type-badge ${isNine ? 'gtb-nine' : 'gtb-ladder'}">${isNine ? '9-Hole' : 'Ladder'}</span>
+      const isNine = g.type==='nine';
+      const pct = Math.round((g.total/g.maxPossible)*100);
+      return `
+      <div class="card clickable" onclick="viewGame('${g.id}')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:52px;height:52px;border-radius:50%;background:#155c35;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="font-size:20px;font-weight:800;color:#c9a84c;line-height:1">${g.total}</span>
+            <span style="font-size:9px;color:rgba(255,255,255,.5);font-weight:500">/${g.maxPossible}</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+              <span class="game-type-badge ${isNine?'gtb-nine':'gtb-ladder'}">${isNine?'9-Hole':'Ladder'}</span>
+              <span style="font-size:11px;color:#9ca3af">${fmtDate(g.date)}</span>
             </div>
-            <div class="serif" style="font-size:20px;color:#1a5c34;line-height:1">${g.total}<span style="font-size:12px;color:#8aaa90;font-family:'Source Sans 3',sans-serif"> / ${g.maxPossible}</span></div>
-            <div style="font-size:10px;color:#8aaa90;margin-top:2px">${fmtDate(g.date)}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              ${isNine
+                ? `<span style="font-size:11px;color:#155c35;font-weight:600">Chip ${g.byType.chip}/6</span><span style="font-size:11px;color:#c9a84c;font-weight:600">Pitch ${g.byType.pitch}/6</span><span style="font-size:11px;color:#dc2626;font-weight:600">Flop ${g.byType.flop}/6</span>`
+                : `<span style="font-size:11px;color:#155c35;font-weight:600">8i ${g.by8i}/4</span><span style="font-size:11px;color:#c9a84c;font-weight:600">52° ${g.by52}/4</span>`}
+            </div>
           </div>
-          <div style="text-align:right">
-            ${isNine ? `
-              <div style="font-size:11px;color:#4a6652">🏃 Chip: ${g.byType.chip}/${g.maxByType.chip}</div>
-              <div style="font-size:11px;color:#4a6652">🎯 Pitch: ${g.byType.pitch}/${g.maxByType.pitch}</div>
-              <div style="font-size:11px;color:#4a6652">🌙 Flop: ${g.byType.flop}/${g.maxByType.flop}</div>
-            ` : `
-              <div style="font-size:11px;color:#4a6652">8-Iron: ${g.by8i}/4</div>
-              <div style="font-size:11px;color:#4a6652">52°: ${g.by52}/4</div>
-            `}
-          </div>
+          <div style="font-size:11px;color:#9ca3af;flex-shrink:0">${pct}% →</div>
         </div>
       </div>`;
     }).join('')}` : '';
 
   return `
-  <div class="page-header">
-    <div class="page-title">Games 🏆</div>
-    <div class="page-sub">Play every session · track your scores</div>
+  <div style="padding:28px 0 20px;display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div style="font-size:28px;font-weight:800;color:#111827">Games</div>
+      <div style="font-size:13px;color:#9ca3af;margin-top:2px">Play every session · track your scores</div>
+    </div>
+    ${games.length>0?`<div style="text-align:right"><div style="font-size:10px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Avg score</div><div style="font-size:22px;font-weight:800;color:#155c35">${avgNine??'—'}<span style="font-size:12px;color:#9ca3af;font-weight:400">/18</span></div></div>`:''}
   </div>
 
-  <div class="section-label">Play a Game</div>
-
-  <div class="card clickable" onclick="startNineHole()" style="border-left:4px solid #1a5c34">
-    <div class="row-between" style="align-items:flex-start">
+  <div class="hero-card" onclick="startNineHole()" style="cursor:pointer">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div>
-        <div class="serif" style="font-size:18px;color:#1a2e22;margin-bottom:4px">9-Hole Short Game</div>
-        <div style="font-size:12px;color:#8aaa90;margin-bottom:8px">9 shots · chip, pitch & flop · max 18 pts</div>
-        <div class="row gap-7 wrap">
-          <span class="shot-type-pill pill-chip">3 Chip &amp; Run</span>
-          <span class="shot-type-pill pill-pitch">3 Pitch</span>
-          <span class="shot-type-pill pill-flop">3 Flop</span>
+        <div class="hero-label">9-Hole Short Game</div>
+        <div class="hero-score">${bestNine??'—'}<span class="hero-of"> /18</span></div>
+        <div class="hero-sub">personal best · tap to play</div>
+      </div>
+      <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:8px 12px;text-align:center;flex-shrink:0">
+        <div style="font-size:9px;color:rgba(255,255,255,.5);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Mix</div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <span class="shot-type-pill pill-chip" style="font-size:9px">3 Chip</span>
+          <span class="shot-type-pill pill-pitch" style="font-size:9px">3 Pitch</span>
+          <span class="shot-type-pill pill-flop" style="font-size:9px">3 Flop</span>
         </div>
       </div>
-      <div style="text-align:center;padding-left:12px;flex-shrink:0">
-        <div style="font-size:10px;color:#8aaa90;margin-bottom:2px">Best</div>
-        <div class="serif" style="font-size:22px;color:#1a5c34">${bestNine !== null ? bestNine : '—'}</div>
-        <div style="font-size:10px;color:#8aaa90">/ 18</div>
-      </div>
     </div>
-    <div style="margin-top:10px;font-size:11px;color:#4a6652">Score each shot: 0 (miss) · 1 (close) · 2 (tap-in or in) →</div>
+    <div class="hero-grade">${nineGs.length} played</div>
   </div>
 
-  <div class="card clickable" onclick="startLadder()" style="border-left:4px solid #b8892a">
-    <div class="row-between" style="align-items:flex-start">
+  <div style="background:#2d3320;border-radius:20px;padding:20px;margin-bottom:10px;cursor:pointer;position:relative;overflow:hidden" onclick="startLadder()">
+    <div style="position:absolute;top:-28px;right:-28px;width:100px;height:100px;border-radius:50%;background:rgba(212,192,106,.1)"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
       <div>
-        <div class="serif" style="font-size:18px;color:#1a2e22;margin-bottom:4px">Club Ladder</div>
-        <div style="font-size:12px;color:#8aaa90;margin-bottom:8px">8 shots · 2 clubs · max 8 pts</div>
-        <div class="row gap-7 wrap">
-          <span class="shot-type-pill pill-chip">4 × 8-Iron</span>
-          <span class="shot-type-pill pill-pitch">4 × 52°</span>
+        <div style="font-size:11px;font-weight:600;color:#f0d070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;opacity:.8">Club Ladder</div>
+        <div style="font-size:52px;font-weight:800;color:#f0d070;line-height:1">${bestLadder??'—'}<span style="font-size:18px;color:rgba(240,208,112,.4);font-weight:500"> /8</span></div>
+        <div style="font-size:12px;color:rgba(240,224,180,.5);margin-top:6px">personal best · tap to play</div>
+      </div>
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:8px 12px;text-align:center;flex-shrink:0">
+        <div style="font-size:9px;color:rgba(240,208,112,.6);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Clubs</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="background:rgba(110,231,160,.15);color:#6ee7a0;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em">4 × 8-Iron</span>
+          <span style="background:rgba(240,208,112,.15);color:#f0d070;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em">4 × 52°</span>
+          <div style="font-size:10px;color:rgba(240,208,112,.4);margin-top:2px;text-align:center">${ladderGs.length} played</div>
         </div>
       </div>
-      <div style="text-align:center;padding-left:12px;flex-shrink:0">
-        <div style="font-size:10px;color:#8aaa90;margin-bottom:2px">Best</div>
-        <div class="serif" style="font-size:22px;color:#b8892a">${bestLadder !== null ? bestLadder : '—'}</div>
-        <div style="font-size:10px;color:#8aaa90">/ 8</div>
-      </div>
     </div>
-    <div style="margin-top:10px;font-size:11px;color:#4a6652">Score each shot: 0 (miss) · 1 (good) — tap as you go →</div>
   </div>
 
   ${recentHTML}`;
@@ -949,39 +1016,49 @@ function renderGames() {
 // RENDER — 9-HOLE GAME
 // ─────────────────────────────────────────────────────────────────────────────
 function renderNineHole() {
-  const total = Object.values(state.nineScores).reduce((a,b)=>a+b,0);
+  const total  = Object.values(state.nineScores).reduce((a,b)=>a+b,0);
   const scored = Object.keys(state.nineScores).length;
 
   const holesHTML = NINE_HOLES.map((h, i) => {
     const cur = state.nineScores[i];
+    const scored0 = cur===0, scored1 = cur===1, scored2 = cur===2;
     return `
-    <div class="hole-row">
-      <div class="row gap-7" style="margin-bottom:9px;align-items:center">
-        <div class="hole-num">${h.hole}</div>
-        <div>
-          <span class="shot-type-pill ${h.pill}" style="font-size:9px">${h.label}</span>
-        </div>
-        <div style="font-size:11px;color:#4a6652;flex:1;margin-left:4px">${h.desc}</div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div class="hole-num" style="width:32px;height:32px;font-size:14px;flex-shrink:0">${h.hole}</div>
+        <span class="shot-type-pill ${h.pill}">${h.label}</span>
       </div>
+      <div style="font-size:15px;font-weight:500;color:#111827;line-height:1.55;margin-bottom:14px">${h.desc}</div>
       <div class="score-btns">
-        <button id="sbtn-${i}-0" class="score-btn${cur===0?' sel-0':''}" onclick="setNineScore(${i},0)">0</button>
-        <button id="sbtn-${i}-1" class="score-btn${cur===1?' sel-1':''}" onclick="setNineScore(${i},1)">1</button>
-        <button id="sbtn-${i}-2" class="score-btn${cur===2?' sel-2':''}" onclick="setNineScore(${i},2)">2</button>
+        <button id="sbtn-${i}-0" class="score-btn${scored0?' sel-0':''}" onclick="setNineScore(${i},0)">
+          <div style="font-size:22px;font-weight:800">0</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">MISS</div>
+        </button>
+        <button id="sbtn-${i}-1" class="score-btn${scored1?' sel-1':''}" onclick="setNineScore(${i},1)">
+          <div style="font-size:22px;font-weight:800">1</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">CLOSE</div>
+        </button>
+        <button id="sbtn-${i}-2" class="score-btn${scored2?' sel-2':''}" onclick="setNineScore(${i},2)">
+          <div style="font-size:22px;font-weight:800">2</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">TAP-IN</div>
+        </button>
       </div>
     </div>`;
   }).join('');
 
   document.getElementById('app').innerHTML = `
-  <div class="session-header">
-    <div class="serif" style="font-size:20px;color:#1a2e22">9-Hole Game</div>
-    <div class="badge" id="nine-running-total">${total} pts · ${scored}/9 holes</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 0 16px">
+    <div>
+      <div style="font-size:22px;font-weight:800;color:#111827">9-Hole Game</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:2px">Miss · Close · Tap-in</div>
+    </div>
+    <div id="nine-running-total" class="badge" style="font-size:13px">${total} pts · ${scored}/9</div>
   </div>
-  <div style="font-size:12px;color:#8aaa90;margin-bottom:16px">0 = miss &nbsp;·&nbsp; 1 = close &nbsp;·&nbsp; 2 = tap-in or better</div>
 
   ${holesHTML}
 
-  <button class="btn btn-green" style="margin-top:8px" onclick="finishNineHole()">Finish & Save ✓</button>
-  <div class="center" style="margin-top:13px">
+  <button class="btn btn-green" style="margin-top:4px" onclick="finishNineHole()">Finish & Save ✓</button>
+  <div class="center" style="margin-top:12px">
     <button class="btn-ghost btn-muted" onclick="goTab('games')">← Back to Games</button>
   </div>`;
 }
@@ -990,72 +1067,70 @@ function renderNineHole() {
 // RENDER — LADDER GAME
 // ─────────────────────────────────────────────────────────────────────────────
 function renderLadderGame() {
-  const total = Object.values(state.ladderScores).reduce((a,b)=>a+b,0);
+  const total  = Object.values(state.ladderScores).reduce((a,b)=>a+b,0);
   const scored = Object.keys(state.ladderScores).length;
 
-  const shotsHTML = LADDER_SHOTS.map(s => {
-    const cur = state.ladderScores[s.idx];
-    const is8i = s.club === '8i';
+  function shotCard(s) {
+    const cur   = state.ladderScores[s.idx];
+    const is8i  = s.club === '8i';
+    // 8-iron: deep forest green card  |  52°: warm olive/sage card
+    const cardBg    = is8i ? '#1e3d2a' : '#2d3320';
+    const labelColor= is8i ? '#6ee7a0' : '#d4c06a';
+    const textColor = '#e8f0e4';
+    const numBg     = is8i ? 'rgba(110,231,160,.18)' : 'rgba(212,192,106,.18)';
     return `
-    <div class="ladder-row">
-      <div class="ladder-shot-num ${is8i ? 'club-8i' : 'club-52'}">${s.idx+1}</div>
-      <div style="flex:1">
-        <div style="font-size:11px;font-weight:600;color:${is8i?'#1a5c34':'#b8892a'};margin-bottom:2px">${s.clubLabel}</div>
-        <div style="font-size:11px;color:#4a6652;line-height:1.45">${s.desc}</div>
+    <div style="background:${cardBg};border-radius:16px;padding:16px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="width:32px;height:32px;border-radius:50%;background:${numBg};color:${labelColor};font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${s.idx+1}</div>
+        <span style="font-size:11px;font-weight:700;color:${labelColor};text-transform:uppercase;letter-spacing:.07em">${s.clubLabel}</span>
       </div>
-      <div style="display:flex;gap:6px;flex-shrink:0">
-        <button id="lbtn-${s.idx}-0" class="ladder-btn${cur===0?' sel-0':''}" onclick="setLadderScore(${s.idx},0)">0</button>
-        <button id="lbtn-${s.idx}-1" class="ladder-btn${cur===1?' sel-1':''}" onclick="setLadderScore(${s.idx},1)">1</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  // Section headers
-  const with8iHeader = `<div class="section-label" style="margin-top:4px;color:#1a5c34">8-Iron — 4 Shots</div>`;
-  const with52Header = `<div class="section-label" style="margin-top:16px;color:#b8892a">52° Wedge — 4 Shots</div>`;
-
-  const shots8i = LADDER_SHOTS.filter(s=>s.club==='8i').map(s => {
-    const cur = state.ladderScores[s.idx];
-    return `<div class="ladder-row">
-      <div class="ladder-shot-num club-8i">${s.idx+1}</div>
-      <div style="flex:1">
-        <div style="font-size:11px;color:#4a6652;line-height:1.45">${s.desc}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0">
-        <button id="lbtn-${s.idx}-0" class="ladder-btn${cur===0?' sel-0':''}" onclick="setLadderScore(${s.idx},0)" style="width:44px;height:44px">0</button>
-        <button id="lbtn-${s.idx}-1" class="ladder-btn${cur===1?' sel-1':''}" onclick="setLadderScore(${s.idx},1)" style="width:44px;height:44px">1</button>
+      <div style="font-size:15px;font-weight:500;color:${textColor};line-height:1.55;margin-bottom:14px">${s.desc}</div>
+      <div style="display:flex;gap:8px">
+        <button id="lbtn-${s.idx}-0" class="ladder-btn${cur===0?' sel-0':''}" onclick="setLadderScore(${s.idx},0)" style="flex:1;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:${cur===0?'#dc2626':textColor}">
+          <div style="font-size:22px;font-weight:800">0</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">MISS</div>
+        </button>
+        <button id="lbtn-${s.idx}-1" class="ladder-btn${cur===1?' sel-1':''}" onclick="setLadderScore(${s.idx},1)" style="flex:1;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:${cur===1?'#155c35':textColor}">
+          <div style="font-size:22px;font-weight:800">1</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">GOOD</div>
+        </button>
       </div>
     </div>`;
-  }).join('');
+  }
 
-  const shots52 = LADDER_SHOTS.filter(s=>s.club==='52').map(s => {
-    const cur = state.ladderScores[s.idx];
-    return `<div class="ladder-row">
-      <div class="ladder-shot-num club-52">${s.idx+1}</div>
-      <div style="flex:1">
-        <div style="font-size:11px;color:#4a6652;line-height:1.45">${s.desc}</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0">
-        <button id="lbtn-${s.idx}-0" class="ladder-btn${cur===0?' sel-0':''}" onclick="setLadderScore(${s.idx},0)" style="width:44px;height:44px">0</button>
-        <button id="lbtn-${s.idx}-1" class="ladder-btn${cur===1?' sel-1':''}" onclick="setLadderScore(${s.idx},1)" style="width:44px;height:44px">1</button>
-      </div>
-    </div>`;
-  }).join('');
+  const shots8i = LADDER_SHOTS.filter(s=>s.club==='8i');
+  const shots52 = LADDER_SHOTS.filter(s=>s.club==='52');
+  const score8i = shots8i.reduce((a,s)=>a+(state.ladderScores[s.idx]??0),0);
+  const score52 = shots52.reduce((a,s)=>a+(state.ladderScores[s.idx]??0),0);
 
   document.getElementById('app').innerHTML = `
-  <div class="session-header">
-    <div class="serif" style="font-size:20px;color:#1a2e22">Club Ladder</div>
-    <div class="badge" id="ladder-running-total">${total} pts · ${scored}/8 shots</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 0 16px">
+    <div>
+      <div style="font-size:22px;font-weight:800;color:#111827">Club Ladder</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:2px">Miss · Good</div>
+    </div>
+    <div id="ladder-running-total" class="badge" style="font-size:13px">${total} pts · ${scored}/8</div>
   </div>
-  <div style="font-size:12px;color:#8aaa90;margin-bottom:16px">Tap 0 or 1 after each shot &nbsp;·&nbsp; 1 = good shot</div>
 
-  ${with8iHeader}
-  ${shots8i}
-  ${with52Header}
-  ${shots52}
+  <div style="display:flex;gap:8px;margin-bottom:20px">
+    <div style="flex:1;background:#e8f4ed;border-radius:14px;padding:12px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:#155c35;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">8-Iron</div>
+      <div style="font-size:26px;font-weight:800;color:#155c35;line-height:1">${score8i}<span style="font-size:12px;color:#9ca3af;font-weight:400"> /4</span></div>
+    </div>
+    <div style="flex:1;background:#fdf6e3;border-radius:14px;padding:12px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">52° Wedge</div>
+      <div style="font-size:26px;font-weight:800;color:#c9a84c;line-height:1">${score52}<span style="font-size:12px;color:#9ca3af;font-weight:400"> /4</span></div>
+    </div>
+  </div>
 
-  <button class="btn btn-green" style="margin-top:8px" onclick="finishLadder()">Finish & Save ✓</button>
-  <div class="center" style="margin-top:13px">
+  <div style="font-size:11px;font-weight:700;color:#155c35;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">8-Iron — 4 shots</div>
+  ${shots8i.map(s=>shotCard(s)).join('')}
+
+  <div style="font-size:11px;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px">52° Wedge — 4 shots</div>
+  ${shots52.map(s=>shotCard(s)).join('')}
+
+  <button class="btn btn-green" style="margin-top:4px" onclick="finishLadder()">Finish & Save ✓</button>
+  <div class="center" style="margin-top:12px">
     <button class="btn-ghost btn-muted" onclick="goTab('games')">← Back to Games</button>
   </div>`;
 }
@@ -1066,69 +1141,53 @@ function renderLadderGame() {
 function renderGameDone() {
   const g = state.lastGame;
   const pct = Math.round((g.total / g.maxPossible) * 100);
-  const grade = pct >= 80 ? '🔥 Excellent' : pct >= 60 ? '👍 Solid' : pct >= 40 ? '📈 Building' : '💪 Keep going';
+  const grade = pct >= 80 ? 'Excellent' : pct >= 60 ? 'Solid' : pct >= 40 ? 'Building' : 'Keep going';
+  const isNine = g.type === 'nine';
 
-  let breakdownHTML = '';
-  if (g.type === 'nine') {
-    breakdownHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
-      ${[['Chip & Run','chip','pill-chip'],['Pitch','pitch','pill-pitch'],['Flop','flop','pill-flop']].map(([lbl,key,cls]) => `
-        <div style="text-align:center;background:#f4f7f4;border-radius:10px;padding:10px 6px;border:1px solid #d0dfd3">
-          <div class="shot-type-pill ${cls}" style="font-size:9px;margin-bottom:6px;display:inline-block">${lbl}</div>
-          <div class="serif" style="font-size:20px;color:#1a5c34">${g.byType[key]}</div>
-          <div style="font-size:10px;color:#8aaa90">/ ${g.maxByType[key]}</div>
-        </div>`).join('')}
-    </div>
-    <div class="tip" style="margin-top:12px">
-      ${g.byType.chip < g.byType.pitch && g.byType.chip < g.byType.flop
-        ? '💡 Chip & run was your weakest today. Focus next session on bumping the ball onto the green with the 8-iron.'
+  const pillsHTML = isNine
+    ? `<div class="pill-stat-row">
+        <div class="pill-stat pill-green"><div class="pill-stat-val">${g.byType.chip}</div><div class="pill-stat-lbl">Chip /6</div></div>
+        <div class="pill-stat pill-gold"><div class="pill-stat-val">${g.byType.pitch}</div><div class="pill-stat-lbl">Pitch /6</div></div>
+        <div class="pill-stat pill-red"><div class="pill-stat-val">${g.byType.flop}</div><div class="pill-stat-lbl">Flop /6</div></div>
+      </div>`
+    : `<div class="pill-stat-row">
+        <div class="pill-stat pill-green"><div class="pill-stat-val">${g.by8i}</div><div class="pill-stat-lbl">8-Iron /4</div></div>
+        <div class="pill-stat pill-gold"><div class="pill-stat-val">${g.by52}</div><div class="pill-stat-lbl">52° /4</div></div>
+      </div>`;
+
+  const tip = isNine
+    ? (g.byType.chip < g.byType.pitch && g.byType.chip < g.byType.flop
+        ? 'Chip & run was your weakest — focus on bumping the ball onto the green with the 8-iron.'
         : g.byType.flop < g.byType.chip && g.byType.flop < g.byType.pitch
-        ? '💡 Flop shots were the challenge. Try the Landing Spot Game next session to build feel for high, soft shots.'
+        ? 'Flop shots were the challenge. Try the Landing Spot Game next session.'
         : g.byType.pitch < g.byType.chip && g.byType.pitch < g.byType.flop
-        ? '💡 Pitching was the weak spot today. Work on your clock-face distances — 7, 9, and 11 o\'clock backswings.'
-        : '💡 Balanced performance across all three shot types. Solid round.'}
-    </div>`;
-  } else {
-    breakdownHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
-      <div style="text-align:center;background:#e8f2eb;border-radius:10px;padding:12px;border:1px solid #b0d4bc">
-        <div style="font-size:10px;font-weight:600;color:#1a5c34;margin-bottom:4px">8-IRON</div>
-        <div class="serif" style="font-size:26px;color:#1a5c34">${g.by8i}<span style="font-size:13px;color:#8aaa90"> /4</span></div>
-      </div>
-      <div style="text-align:center;background:#fdf4e0;border-radius:10px;padding:12px;border:1px solid #d4a843">
-        <div style="font-size:10px;font-weight:600;color:#b8892a;margin-bottom:4px">52° WEDGE</div>
-        <div class="serif" style="font-size:26px;color:#b8892a">${g.by52}<span style="font-size:13px;color:#8aaa90"> /4</span></div>
-      </div>
-    </div>
-    <div class="tip" style="margin-top:12px">
-      ${g.by8i > g.by52
-        ? '💡 8-iron was your stronger club today. Your 52° needs work — focus on clean contact from different distances.'
+        ? 'Pitching was the weak spot. Work on your 7, 9, 11 o\'clock backswings with the 52°.'
+        : 'Balanced across all three shot types. Solid round.')
+    : (g.by8i > g.by52
+        ? '8-iron was stronger. Your 52° needs work — focus on clean contact from different distances.'
         : g.by52 > g.by8i
-        ? '💡 52° wedge performed better. The 8-iron bump & run might need some pace calibration — try the Bump & Run Race drill.'
-        : '💡 Even performance from both clubs. Consistency is a great sign — now push the distances further next time.'}
-    </div>`;
-  }
+        ? '52° performed better. The 8-iron bump & run needs pace calibration.'
+        : 'Even split — solid consistency. Push the distances further next time.');
 
   return `
-  <div style="padding:36px 0 20px;text-align:center">
-    <div style="font-size:13px;color:#8aaa90;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">${g.type==='nine'?'9-Hole Game':'Club Ladder'}</div>
-    <div class="score-ring">
-      <div class="score-ring-val">${g.total}</div>
-      <div class="score-ring-max">/ ${g.maxPossible}</div>
-    </div>
-    <div style="font-size:15px;font-weight:600;color:#1a5c34;margin-top:8px">${grade}</div>
-    <div style="font-size:11px;color:#8aaa90;margin-top:2px">${pct}% · ${fmtDate(new Date())}</div>
+  <div class="hero-card" style="margin-top:20px">
+    <div class="hero-label">${isNine ? '9-Hole Game' : 'Club Ladder'} · ${fmtDate(new Date())}</div>
+    <div class="hero-score">${g.total}<span class="hero-of"> /${g.maxPossible}</span></div>
+    <div class="hero-sub">${pct}% · ${grade}</div>
+    <div class="hero-grade">${grade}</div>
   </div>
-  <div class="card">
-    <div class="section-label">Breakdown</div>
-    ${breakdownHTML}
-  </div>
-  <div style="display:flex;gap:8px;margin-top:16px">
+
+  <div class="section-label" style="margin-top:20px">By shot type</div>
+  ${pillsHTML}
+
+  <div class="tip">💡 ${tip}</div>
+
+  <div style="display:flex;gap:8px;margin-top:20px">
     <button class="btn-ghost flex-1" onclick="goTab('games')" style="margin-top:0">← Games</button>
-    <button class="btn flex-1" onclick="${g.type==='nine'?'startNineHole()':'startLadder()'}" style="margin-top:0">Play Again</button>
+    <button class="btn flex-1" onclick="${isNine?'startNineHole()':'startLadder()'}" style="margin-top:0">Play Again</button>
   </div>
   <div class="center" style="margin-top:10px">
-    <button class="btn-ghost btn-muted" onclick="goTab('practice')">💡 See Practice Ideas</button>
+    <button class="btn-ghost btn-muted" onclick="goTab('practice')">See Practice Ideas</button>
   </div>`;
 }
 
@@ -1145,151 +1204,109 @@ function viewGame(gameId) {
 function renderGameDetail() {
   const g = state.viewingGame;
   if (!g) { goTab('history'); return; }
-
   const pct   = Math.round((g.total / g.maxPossible) * 100);
-  const grade = pct >= 80 ? '🔥 Excellent' : pct >= 60 ? '👍 Solid' : pct >= 40 ? '📈 Building' : '💪 Keep going';
+  const grade = pct >= 80 ? 'Excellent' : pct >= 60 ? 'Solid' : pct >= 40 ? 'Building' : 'Keep going';
   const isNine = g.type === 'nine';
 
-  // ── Score bar helper ──
-  function scoreBar(val, max, color) {
-    const w = max > 0 ? Math.round((val/max)*100) : 0;
-    return `<div style="height:8px;background:#eef3ee;border-radius:4px;overflow:hidden;margin-top:4px">
-      <div style="height:100%;width:${w}%;background:${color};border-radius:4px;transition:width .4s"></div>
-    </div>`;
-  }
-
-  // ── Score dot (0/1/2 or 0/1) ──
   function scoreDot(val, max) {
-    if (val === null || val === undefined) return `<span style="font-size:12px;color:#d0dfd3">—</span>`;
-    const color = max === 2
-      ? (val === 2 ? '#1a5c34' : val === 1 ? '#b8892a' : '#c0392b')
-      : (val === 1 ? '#1a5c34' : '#c0392b');
-    const label = String(val);
-    return `<span style="display:inline-flex;align-items:center;justify-content:center;
-      width:26px;height:26px;border-radius:50%;background:${color};
-      color:#fff;font-size:12px;font-weight:700">${label}</span>`;
+    if (val===null||val===undefined) return `<span style="color:#e5e7eb;font-size:12px;font-weight:700">—</span>`;
+    const bg = max===2 ? (val===2?'#155c35':val===1?'#c9a84c':'#dc2626') : (val===1?'#155c35':'#dc2626');
+    return `<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:${bg};color:#fff;font-size:12px;font-weight:800;flex-shrink:0">${val}</span>`;
   }
 
-  let summaryHTML = '';
-  let detailHTML  = '';
+  function scoreBar(val, max, color) {
+    const w = max>0 ? Math.round((val/max)*100) : 0;
+    return `<div style="height:6px;background:#f3f4f6;border-radius:3px;overflow:hidden;margin-top:6px"><div style="height:100%;width:${w}%;background:${color};border-radius:3px"></div></div>`;
+  }
 
-  if (isNine) {
-    // Type breakdown summary
-    const types = [
-      { key:'chip',  label:'Chip & Run', pill:'pill-chip',  color:'#1a5c34' },
-      { key:'pitch', label:'Pitch',      pill:'pill-pitch', color:'#b8892a' },
-      { key:'flop',  label:'Flop',       pill:'pill-flop',  color:'#c0392b' },
-    ];
-    summaryHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
-        ${types.map(t => `
-          <div style="background:#f4f7f4;border:1px solid #d0dfd3;border-radius:10px;padding:10px 8px;text-align:center">
-            <span class="shot-type-pill ${t.pill}" style="font-size:9px;margin-bottom:6px;display:inline-block">${t.label}</span>
-            <div class="serif" style="font-size:22px;color:${t.color}">${g.byType[t.key]}</div>
-            <div style="font-size:10px;color:#8aaa90">/ ${g.maxByType[t.key]}</div>
-            ${scoreBar(g.byType[t.key], g.maxByType[t.key], t.color)}
-          </div>`).join('')}
-      </div>`;
-
-    // Weakest type tip
-    const worst = types.slice().sort((a,b) =>
-      (g.byType[a.key]/g.maxByType[a.key]) - (g.byType[b.key]/g.maxByType[b.key]))[0];
-    const tips = {
-      chip:  'Chip & run was your weakest — focus on bumping the ball onto the green with the 8-iron, landing 2–3 ft on.',
-      pitch: 'Pitching needs work — practice clock-face distances: 7, 9, and 11 o\'clock backswings with your 52°.',
-      flop:  'Flop shots were the challenge — try the Landing Spot Game to build feel for high, soft shots from tight lies.',
-    };
-    summaryHTML += `<div class="tip" style="margin-bottom:16px">💡 ${tips[worst.key]}</div>`;
-
-    // Hole-by-hole detail
-    detailHTML = `
-      <div class="section-label" style="margin-top:4px">Hole by Hole</div>
-      ${(g.scores || []).map((h, i) => `
-        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;
-          border-bottom:${i < g.scores.length-1 ? '1px solid #eef3ee' : 'none'}">
-          <div class="hole-num" style="flex-shrink:0">${h.hole}</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-              <span class="shot-type-pill ${h.pill}" style="font-size:9px">${h.label}</span>
-            </div>
-            <div style="font-size:11px;color:#4a6652;line-height:1.4">${h.desc}</div>
-          </div>
-          <div style="flex-shrink:0">${scoreDot(h.score, 2)}</div>
-        </div>`).join('')}`;
-
-  } else {
-    // Ladder: club breakdown
-    summaryHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
-        <div style="background:#e8f2eb;border:1px solid #b0d4bc;border-radius:10px;padding:12px;text-align:center">
-          <div style="font-size:10px;font-weight:700;color:#1a5c34;margin-bottom:4px;letter-spacing:.06em">8-IRON</div>
-          <div class="serif" style="font-size:28px;color:#1a5c34">${g.by8i}<span style="font-size:13px;color:#8aaa90;font-family:'Source Sans 3',sans-serif"> /4</span></div>
-          ${scoreBar(g.by8i, 4, '#1a5c34')}
+  const pillsHTML = isNine
+    ? `<div class="pill-stat-row">
+        <div class="pill-stat pill-green">
+          <div class="pill-stat-val">${g.byType.chip}</div>
+          <div class="pill-stat-lbl">Chip /6</div>
+          ${scoreBar(g.byType.chip, 6, '#155c35')}
         </div>
-        <div style="background:#fdf4e0;border:1px solid #d4a843;border-radius:10px;padding:12px;text-align:center">
-          <div style="font-size:10px;font-weight:700;color:#b8892a;margin-bottom:4px;letter-spacing:.06em">52° WEDGE</div>
-          <div class="serif" style="font-size:28px;color:#b8892a">${g.by52}<span style="font-size:13px;color:#8aaa90;font-family:'Source Sans 3',sans-serif"> /4</span></div>
-          ${scoreBar(g.by52, 4, '#b8892a')}
+        <div class="pill-stat pill-gold">
+          <div class="pill-stat-val">${g.byType.pitch}</div>
+          <div class="pill-stat-lbl">Pitch /6</div>
+          ${scoreBar(g.byType.pitch, 6, '#c9a84c')}
+        </div>
+        <div class="pill-stat pill-red">
+          <div class="pill-stat-val">${g.byType.flop}</div>
+          <div class="pill-stat-lbl">Flop /6</div>
+          ${scoreBar(g.byType.flop, 6, '#dc2626')}
+        </div>
+      </div>`
+    : `<div class="pill-stat-row">
+        <div class="pill-stat pill-green">
+          <div class="pill-stat-val">${g.by8i}</div>
+          <div class="pill-stat-lbl">8-Iron /4</div>
+          ${scoreBar(g.by8i, 4, '#155c35')}
+        </div>
+        <div class="pill-stat pill-gold">
+          <div class="pill-stat-val">${g.by52}</div>
+          <div class="pill-stat-lbl">52° /4</div>
+          ${scoreBar(g.by52, 4, '#c9a84c')}
         </div>
       </div>`;
 
-    const ladderTip = g.by8i > g.by52
-      ? '8-iron was stronger today. Your 52° needs work — focus on clean contact and a consistent landing spot.'
-      : g.by52 > g.by8i
-      ? '52° wedge performed better. The 8-iron bump & run may need pace calibration — try the Bump & Run Race drill.'
-      : 'Even split between both clubs — solid consistency. Push the distances a bit further next time.';
-    summaryHTML += `<div class="tip" style="margin-bottom:16px">💡 ${ladderTip}</div>`;
+  const worstTip = isNine
+    ? (() => {
+        const t = [{k:'chip',v:g.byType.chip/6},{k:'pitch',v:g.byType.pitch/6},{k:'flop',v:g.byType.flop/6}].sort((a,b)=>a.v-b.v)[0].k;
+        return {chip:'Chip & run was your weakest — focus on bumping the ball onto the green with the 8-iron, landing 2–3 ft on.',pitch:'Pitching needs work — practice clock-face distances: 7, 9, 11 o\'clock backswings with your 52°.',flop:'Flop shots were the challenge — try the Landing Spot Game to build feel for high, soft shots.'}[t];
+      })()
+    : g.by8i>g.by52 ? '8-iron was stronger. Your 52° needs work — focus on clean contact and consistent landing spot.'
+    : g.by52>g.by8i ? '52° performed better. The 8-iron bump & run needs some pace calibration.'
+    : 'Even split — solid consistency. Push the distances further next time.';
 
-    // Shot-by-shot detail
-    const shots8i = (g.shots || []).filter(s => s.club === '8i');
-    const shots52 = (g.shots || []).filter(s => s.club === '52');
-
-    function shotRows(shots, color) {
-      return shots.map((s, i) => `
-        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;
-          border-bottom:${i < shots.length-1 ? '1px solid #eef3ee' : 'none'}">
-          <div class="ladder-shot-num ${s.club==='8i'?'club-8i':'club-52'}" style="flex-shrink:0">${s.idx+1}</div>
-          <div style="flex:1;font-size:11px;color:#4a6652;line-height:1.4">${s.desc}</div>
-          <div style="flex-shrink:0">${scoreDot(s.score, 1)}</div>
-        </div>`).join('');
-    }
-
-    detailHTML = `
-      <div class="section-label" style="margin-top:4px;color:#1a5c34">8-Iron Shots</div>
-      <div style="background:#fff;border:1px solid #d0dfd3;border-radius:10px;padding:4px 12px;margin-bottom:12px">
-        ${shotRows(shots8i, '#1a5c34')}
-      </div>
-      <div class="section-label" style="color:#b8892a">52° Wedge Shots</div>
-      <div style="background:#fff;border:1px solid #d0dfd3;border-radius:10px;padding:4px 12px">
-        ${shotRows(shots52, '#b8892a')}
-      </div>`;
-  }
+  const holeRows = isNine
+    ? (g.scores||[]).map((h,i)=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:${i<g.scores.length-1?'1px solid #f3f4f6':'none'}">
+        <div class="hole-num" style="flex-shrink:0">${h.hole}</div>
+        <div style="flex:1;min-width:0">
+          <div style="margin-bottom:3px"><span class="shot-type-pill ${h.pill}" style="font-size:9px">${h.label}</span></div>
+          <div style="font-size:11px;color:#6b7280;line-height:1.4">${h.desc}</div>
+        </div>
+        ${scoreDot(h.score, 2)}
+      </div>`).join('')
+    : (() => {
+        const shots8i = (g.shots||[]).filter(s=>s.club==='8i');
+        const shots52 = (g.shots||[]).filter(s=>s.club==='52');
+        return `
+          <div style="font-size:11px;font-weight:700;color:#155c35;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">8-Iron</div>
+          ${shots8i.map((s,i)=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:${i<shots8i.length-1?'1px solid #f3f4f6':'1px solid #e5e7eb'}">
+              <div class="ladder-shot-num club-8i" style="flex-shrink:0">${s.idx+1}</div>
+              <div style="flex:1;font-size:11px;color:#6b7280;line-height:1.4">${s.desc}</div>
+              ${scoreDot(s.score, 1)}
+            </div>`).join('')}
+          <div style="font-size:11px;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:.06em;margin:12px 0 8px">52° Wedge</div>
+          ${shots52.map((s,i)=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:${i<shots52.length-1?'1px solid #f3f4f6':'none'}">
+              <div class="ladder-shot-num club-52" style="flex-shrink:0">${s.idx+1}</div>
+              <div style="flex:1;font-size:11px;color:#6b7280;line-height:1.4">${s.desc}</div>
+              ${scoreDot(s.score, 1)}
+            </div>`).join('')}`;
+      })();
 
   return `
-  <div style="padding:24px 0 16px">
-    <button class="btn-ghost btn-muted" onclick="goTab('history')" style="padding:0;font-size:12px;margin-bottom:16px">← Back to History</button>
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
-      <div class="score-ring" style="width:72px;height:72px;margin:0;flex-shrink:0">
-        <div class="score-ring-val" style="font-size:24px">${g.total}</div>
-        <div class="score-ring-max">/ ${g.maxPossible}</div>
-      </div>
-      <div>
-        <div style="margin-bottom:4px">
-          <span class="game-type-badge ${isNine?'gtb-nine':'gtb-ladder'}">${isNine?'9-Hole':'Club Ladder'}</span>
-        </div>
-        <div style="font-size:15px;font-weight:600;color:#1a5c34">${grade} &nbsp;<span style="color:#8aaa90;font-weight:400;font-size:12px">${pct}%</span></div>
-        <div style="font-size:11px;color:#8aaa90;margin-top:2px">${fmtDate(g.date)}</div>
-      </div>
-    </div>
+  <button class="btn-ghost btn-muted" onclick="goTab('history')" style="margin-top:20px;padding:0;font-size:13px;font-weight:600">← History</button>
+
+  <div class="hero-card" style="margin-top:14px">
+    <div class="hero-label">${isNine?'9-Hole Game':'Club Ladder'} · ${fmtDate(g.date)}</div>
+    <div class="hero-score">${g.total}<span class="hero-of"> /${g.maxPossible}</span></div>
+    <div class="hero-sub">${pct}%</div>
+    <div class="hero-grade">${grade}</div>
   </div>
 
-  <div class="card" style="margin-bottom:12px">
-    <div class="section-label">By Shot Type</div>
-    ${summaryHTML}
-  </div>
+  <div class="section-label" style="margin-top:20px">By shot type</div>
+  ${pillsHTML}
 
+  <div class="tip">💡 ${worstTip}</div>
+
+  <div class="section-label" style="margin-top:20px">Shot by shot</div>
   <div class="card">
-    ${detailHTML}
+    ${holeRows}
   </div>
 
   <div style="display:flex;gap:8px;margin-top:16px">
@@ -1302,45 +1319,56 @@ function renderGameDetail() {
 // RENDER — PLANS
 // ─────────────────────────────────────────────────────────────────────────────
 function renderPlans() {
-  const recent = sessions.slice(-5).reverse();
+  const recent = sessions.slice(-3).reverse();
   const recentHTML = recent.length ? `
-    <div class="section-label" style="margin-top:28px">Recent Sessions</div>
+    <div class="section-label" style="margin-top:24px">Recent Sessions</div>
     ${recent.map(s => `
       <div class="card">
-        <div class="row-between" style="align-items:center">
-          <div>
-            <div class="serif" style="font-size:13px;color:#1a2e22">${s.planName}</div>
-            <div style="font-size:10px;color:#8aaa90;margin-top:2px">${fmtDate(s.date)} · ${s.drillCount} drills${s.skipped?` · ${s.skipped} skipped`:''}</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:44px;height:44px;border-radius:12px;background:#e8f4ed;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="font-size:20px">⛳</span>
           </div>
-          <div class="row wrap gap-7" style="justify-content:flex-end;max-width:160px">
-            ${s.highlights.slice(0,2).map(h=>`<span style="background:#e8f2eb;border:1px solid #b0d4bc;border-radius:5px;padding:2px 7px;font-size:10px;color:#1a5c34">${h}</span>`).join('')}
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:600;color:#111827">${s.planName}</div>
+            <div style="font-size:12px;color:#9ca3af;margin-top:1px">${fmtDate(s.date)} · ${s.drillCount} drills${s.skipped?` · ${s.skipped} skipped`:''}</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:120px">
+            ${s.highlights.slice(0,1).map(h=>`<span style="background:#e8f4ed;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:600;color:#155c35">${h}</span>`).join('')}
           </div>
         </div>
       </div>`).join('')}` : '';
 
   return `
-  <div class="page-header">
-    <div class="page-title">Short Game Grind ⛳</div>
-    <div class="page-sub">Pick a plan · Log as you go · Track improvement</div>
+  <div style="padding:28px 0 20px">
+    <div style="font-size:28px;font-weight:800;color:#111827">Practice</div>
+    <div style="font-size:13px;color:#9ca3af;margin-top:2px">Pick a plan · log as you go</div>
   </div>
-  <div class="row wrap gap-7" style="margin-bottom:18px">
-    <span class="space-badge space-full">⚠ Open green needed</span>
+
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px">
+    <span class="space-badge space-full">⚠ Open green</span>
     <span class="space-badge space-edge">◐ Edge only</span>
     <span class="space-badge space-solo">✓ Single hole</span>
   </div>
+
   <div class="section-label">Session Plans</div>
   ${PLANS.map((plan, i) => {
     const planDrills = plan.drills.map(id=>getDrill(id)).filter(Boolean);
     const maxSpace = planDrills.some(d=>d.spaceNeeded==='full')?'full':planDrills.some(d=>d.spaceNeeded==='edge')?'edge':'solo';
     const sp = SPACE_INFO[maxSpace];
+    const colors = {full:'#dc2626',edge:'#c9a84c',solo:'#155c35'};
     return `
-    <div class="card clickable" onclick="startSession(${i})">
-      <div class="row-between" style="margin-bottom:5px">
-        <div class="serif" style="font-size:16px;color:#1a2e22">${plan.name}</div>
-        <span class="badge" style="font-size:10px">${plan.label}</span>
+    <div class="card clickable" onclick="startSession(${i})" style="border-left:4px solid ${colors[maxSpace]};border-radius:0 16px 16px 0">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:15px;font-weight:700;color:#111827">${plan.name}</span>
+            <span class="badge">${plan.label}</span>
+          </div>
+          <div style="font-size:11px;color:#9ca3af">${planDrills.map(d=>d.name).join(' · ')}</div>
+          <div style="margin-top:6px"><span class="space-badge ${sp.cls}" style="font-size:9px">${sp.icon} ${sp.maxLabel}</span></div>
+        </div>
+        <div style="color:#d1d5db;font-size:18px;flex-shrink:0">›</div>
       </div>
-      <div style="font-size:11px;color:#8aaa90;margin-bottom:7px">${planDrills.map(d=>d.name).join(' · ')}</div>
-      <span class="space-badge ${sp.cls}" style="font-size:10px;padding:2px 7px">${sp.icon} ${sp.maxLabel}</span>
     </div>`;
   }).join('')}
   ${recentHTML}`;
@@ -1352,44 +1380,77 @@ function renderPlans() {
 function renderDrills() {
   const groups = { solo:[], edge:[], full:[] };
   DRILLS.forEach(d => groups[d.spaceNeeded].push(d));
-  const headers = { solo:'✓ Works Anywhere — Single Hole', edge:'◐ Edge of Green Only', full:'⚠ Needs Open Green' };
-  const colors  = { solo:'#2e7d4f', edge:'#b8892a', full:'#c0392b' };
+
+  const sections = [
+    { key:'solo', dark:'#0f2d1a', label_c:'#6ee7a0', text_c:'#d4eeda', icon:'✓', label:'Works anywhere', sub:'Single hole only' },
+    { key:'edge', dark:'#2d2510', label_c:'#f0d070', text_c:'#f0e5c0', icon:'◐', label:'Edge of green',  sub:'Fringe access needed' },
+    { key:'full', dark:'#2d1010', label_c:'#f8a0a0', text_c:'#f5d0d0', icon:'⚠', label:'Open green',     sub:'Full green needed' },
+  ];
+
   return `
-  <div class="page-header">
-    <div class="page-title">All Drills</div>
-    <div class="page-sub">${DRILLS.length} drills · sorted by space needed</div>
+  <div style="padding:28px 0 20px">
+    <div style="font-size:28px;font-weight:800;color:#111827">Drills</div>
+    <div style="font-size:13px;color:#9ca3af;margin-top:2px">${DRILLS.length} drills · sorted by space needed</div>
   </div>
-  ${['solo','edge','full'].map(space=>`
-    <div style="margin-bottom:24px">
-      <div class="section-label" style="color:${colors[space]};margin-bottom:12px">${headers[space]}</div>
-      ${groups[space].map(d=>`
-        <div class="card">
-          <div class="row-between" style="margin-bottom:5px">
-            <div class="serif" style="font-size:15px;color:#1a2e22">${d.name}</div>
-            <div style="font-size:11px;color:#8aaa90">${d.duration} min</div>
-          </div>
-          <div style="font-size:12px;color:#8aaa90;line-height:1.65;margin-bottom:7px">${d.description}</div>
-          <div style="font-size:11px;color:#2e7d4f;line-height:1.55">💡 ${d.tip}</div>
-          <div style="font-size:10px;color:#8aaa90;margin-top:7px">Clubs: ${d.clubs.join(', ')}</div>
-        </div>`).join('')}
-    </div>`).join('')}`;
+
+  ${sections.map(sec => `
+    <div style="background:${sec.dark};border-radius:16px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <span style="color:${sec.label_c};font-size:18px;font-weight:800">${sec.icon}</span>
+      </div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:${sec.label_c}">${sec.label}</div>
+        <div style="font-size:11px;color:${sec.label_c};opacity:.6;margin-top:1px">${sec.sub} · ${groups[sec.key].length} drills</div>
+      </div>
+    </div>
+    ${groups[sec.key].map(d => `
+      <div style="background:${sec.dark};border-radius:16px;padding:16px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:15px;font-weight:700;color:${sec.label_c}">${d.name}</div>
+          <span style="font-size:11px;font-weight:600;color:${sec.label_c};opacity:.7;background:rgba(255,255,255,.1);padding:3px 9px;border-radius:20px">${d.duration} min</span>
+        </div>
+        <div style="font-size:13px;color:${sec.text_c};line-height:1.65;margin-bottom:12px">${d.description}</div>
+        <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;font-size:12px;color:${sec.label_c};line-height:1.55;font-weight:500">💡 ${d.tip}</div>
+        <div style="font-size:11px;color:${sec.label_c};opacity:.5;margin-top:8px">Clubs: ${d.clubs.join(' · ')}</div>
+      </div>`).join('')}
+    <div style="height:6px"></div>
+  `).join('')}`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RENDER — PRACTICE LIBRARY
 // ─────────────────────────────────────────────────────────────────────────────
 function renderPractice() {
+  const tags = [...new Set(PRACTICES.map(p=>p.tag))];
+  const tagColors = {
+    Putting:  { dark:'#0f2d1a', label_c:'#6ee7a0', text_c:'#d4eeda' },
+    Chipping: { dark:'#2d2510', label_c:'#f0d070', text_c:'#f0e5c0' },
+    Pitching: { dark:'#2d1010', label_c:'#f8a0a0', text_c:'#f5d0d0' },
+    Bunker:   { dark:'#1e1a30', label_c:'#b8a8f0', text_c:'#ddd8f5' },
+    Mental:   { dark:'#0f1e35', label_c:'#7eb8f8', text_c:'#c8ddf8' },
+  };
+
   return `
-  <div class="page-header">
-    <div class="page-title">Practice Ideas 💡</div>
-    <div class="page-sub">Focused drills to do after your game · no scoring needed</div>
+  <div style="padding:28px 0 20px">
+    <div style="font-size:28px;font-weight:800;color:#111827">Practice</div>
+    <div style="font-size:13px;color:#9ca3af;margin-top:2px">Focused work after your game · no scoring</div>
   </div>
-  ${PRACTICES.map(p => `
-    <div class="practice-card">
-      <span class="practice-tag ${p.tagCls}">${p.tag}</span>
-      <div class="serif" style="font-size:16px;color:#1a2e22;margin-bottom:6px">${p.title}</div>
-      <div style="font-size:13px;color:#4a6652;line-height:1.65">${p.desc}</div>
-    </div>`).join('')}`;
+
+  ${tags.map(tag => {
+    const tc = tagColors[tag] || { dark:'#0f2d1a', label_c:'#6ee7a0', text_c:'#d4eeda' };
+    const items = PRACTICES.filter(p=>p.tag===tag);
+    return `
+    <div style="background:${tc.dark};border-radius:16px;padding:14px 16px;margin-bottom:8px">
+      <div style="font-size:13px;font-weight:800;color:${tc.label_c};text-transform:uppercase;letter-spacing:.08em">${tag}</div>
+      <div style="font-size:11px;color:${tc.label_c};opacity:.6;margin-top:2px">${items.length} drill${items.length!==1?'s':''}</div>
+    </div>
+    ${items.map(p=>`
+      <div style="background:${tc.dark};border-radius:16px;padding:16px;margin-bottom:8px">
+        <div style="font-size:15px;font-weight:700;color:${tc.label_c};margin-bottom:8px">${p.title}</div>
+        <div style="font-size:13px;color:${tc.text_c};line-height:1.65">${p.desc}</div>
+      </div>`).join('')}
+    <div style="height:6px"></div>`;
+  }).join('')}`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1418,78 +1479,93 @@ function renderHistory() {
   const sessionList = [...sessions].reverse();
 
   return `
-  <div class="page-header">
-    <div class="page-title">Your Progress 📈</div>
-    <div class="page-sub">${st.totalGames} games · ${st.total} drill sessions</div>
-  </div>
-  <div class="io-row">
-    <button class="btn-ghost" onclick="exportData()">↓ Export backup</button>
-    <button class="btn-ghost" onclick="document.getElementById('import-input').click()">↑ Import / restore</button>
-    <input id="import-input" type="file" accept=".json" style="display:none" onchange="handleImport(this)"/>
+  <div style="padding:28px 0 20px;display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div style="font-size:28px;font-weight:800;color:#111827">Progress</div>
+      <div style="font-size:13px;color:#9ca3af;margin-top:2px">${st.totalGames} games · ${st.total} sessions</div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="btn-ghost" onclick="exportData()" style="font-size:11px;padding:8px 12px;margin-top:0">↓ Export</button>
+      <button class="btn-ghost" onclick="document.getElementById('import-input').click()" style="font-size:11px;padding:8px 12px;margin-top:0">↑ Import</button>
+      <input id="import-input" type="file" accept=".json" style="display:none" onchange="handleImport(this)"/>
+    </div>
   </div>
   <div id="import-toast" class="toast"></div>
 
-  <div class="section-label">Game Scores</div>
-  <div class="stat-grid">${gameTiles.map(t=>`<div class="stat-tile"><div class="stat-label">${t.l}</div><div class="stat-value">${t.v}</div></div>`).join('')}</div>
-  ${nineData.length >= 2 ? renderChart(nineData.slice().reverse(), '9-Hole score (/ 18)', false) : ''}
-  ${ladderData.length >= 2 ? renderChart(ladderData.slice().reverse(), 'Ladder score (/ 8)', false) : ''}
+  ${st.bestNine !== null ? `
+  <div class="hero-card" style="margin-bottom:14px">
+    <div class="hero-label">9-Hole · Personal Best</div>
+    <div class="hero-score">${st.bestNine}<span class="hero-of"> /18</span></div>
+    <div class="hero-sub">avg ${st.avgNine}/18 over ${nineGs.length} game${nineGs.length!==1?'s':''}</div>
+    <div class="hero-grade">${st.totalGames} games</div>
+  </div>` : ''}
 
-  <div class="section-label" style="margin-top:20px">Drill Sessions</div>
-  <div class="stat-grid">${drillTiles.map(t=>`<div class="stat-tile"><div class="stat-label">${t.l}</div><div class="stat-value">${t.v}</div></div>`).join('')}</div>
-  ${renderChart(sessions.map(s=>s.metrics?.up_downs).filter(v=>v!=null), 'Up-and-downs / 5', false)}
-  ${renderChart(sessions.map(s=>Number(s.metrics?.proximity)).filter(n=>n>0&&!isNaN(n)), 'Chipping proximity (ft)', true)}
+  <div class="section-label">Game scores</div>
+  <div class="stat-grid" style="margin-bottom:14px">
+    ${gameTiles.map(t=>`<div class="stat-tile"><div class="stat-label">${t.l}</div><div class="stat-value">${t.v}</div></div>`).join('')}
+  </div>
+  ${nineData.length >= 2 ? renderChart(nineData.slice().reverse(), '9-Hole score / 18', false) : ''}
+  ${ladderData.length >= 2 ? renderChart(ladderData.slice().reverse(), 'Ladder score / 8', false) : ''}
 
   ${nineGs.length > 0 ? `
-  <div class="section-label" style="margin-top:20px">9-Hole History</div>
+  <div class="section-label" style="margin-top:20px">9-Hole history</div>
   ${nineGs.map(g=>`
     <div class="card clickable" onclick="viewGame('${g.id}')">
-      <div class="row-between" style="align-items:center">
-        <div>
-          <div class="row gap-7" style="margin-bottom:3px">
-            <span class="game-type-badge gtb-nine">9-Hole</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:48px;height:48px;border-radius:50%;background:#155c35;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+          <span style="font-size:18px;font-weight:800;color:#c9a84c;line-height:1">${g.total}</span>
+          <span style="font-size:9px;color:rgba(255,255,255,.4)">/18</span>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:#111827">${fmtDate(g.date)}</div>
+          <div style="display:flex;gap:8px;margin-top:3px">
+            <span style="font-size:11px;color:#155c35;font-weight:600">Chip ${g.byType.chip}/6</span>
+            <span style="font-size:11px;color:#c9a84c;font-weight:600">Pitch ${g.byType.pitch}/6</span>
+            <span style="font-size:11px;color:#dc2626;font-weight:600">Flop ${g.byType.flop}/6</span>
           </div>
-          <div style="font-size:10px;color:#8aaa90">${fmtDate(g.date)}</div>
-          <div style="font-size:10px;color:#b0d4bc;margin-top:3px">Tap to see breakdown →</div>
         </div>
-        <div style="text-align:right">
-          <div class="serif" style="font-size:26px;color:#1a5c34">${g.total}<span style="font-size:11px;color:#8aaa90;font-family:'Source Sans 3',sans-serif"> /18</span></div>
-          <div style="font-size:10px;color:#8aaa90">Chip ${g.byType.chip} · Pitch ${g.byType.pitch} · Flop ${g.byType.flop}</div>
-        </div>
+        <span style="color:#d1d5db;font-size:16px">›</span>
       </div>
     </div>`).join('')}` : ''}
 
   ${ladderGs.length > 0 ? `
-  <div class="section-label" style="margin-top:20px">Ladder History</div>
+  <div class="section-label" style="margin-top:20px">Ladder history</div>
   ${ladderGs.map(g=>`
     <div class="card clickable" onclick="viewGame('${g.id}')">
-      <div class="row-between" style="align-items:center">
-        <div>
-          <div class="row gap-7" style="margin-bottom:3px">
-            <span class="game-type-badge gtb-ladder">Ladder</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:48px;height:48px;border-radius:50%;background:#fdf6e3;border:2px solid #c9a84c;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">
+          <span style="font-size:18px;font-weight:800;color:#c9a84c;line-height:1">${g.total}</span>
+          <span style="font-size:9px;color:#c9a84c;opacity:.6">/8</span>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:#111827">${fmtDate(g.date)}</div>
+          <div style="display:flex;gap:8px;margin-top:3px">
+            <span style="font-size:11px;color:#155c35;font-weight:600">8-iron ${g.by8i}/4</span>
+            <span style="font-size:11px;color:#c9a84c;font-weight:600">52° ${g.by52}/4</span>
           </div>
-          <div style="font-size:10px;color:#8aaa90">${fmtDate(g.date)}</div>
-          <div style="font-size:10px;color:#b0d4bc;margin-top:3px">Tap to see breakdown →</div>
         </div>
-        <div style="text-align:right">
-          <div class="serif" style="font-size:26px;color:#b8892a">${g.total}<span style="font-size:11px;color:#8aaa90;font-family:'Source Sans 3',sans-serif"> /8</span></div>
-          <div style="font-size:10px;color:#8aaa90">8-iron ${g.by8i}/4 · 52° ${g.by52}/4</div>
-        </div>
+        <span style="color:#d1d5db;font-size:16px">›</span>
       </div>
     </div>`).join('')}` : ''}
 
   ${sessionList.length > 0 ? `
-  <div class="section-label" style="margin-top:20px">Drill Sessions</div>
+  <div class="section-label" style="margin-top:20px">Drill sessions</div>
+  <div class="stat-grid" style="margin-bottom:14px">
+    ${drillTiles.map(t=>`<div class="stat-tile"><div class="stat-label">${t.l}</div><div class="stat-value">${t.v}</div></div>`).join('')}
+  </div>
+  ${renderChart(sessions.map(s=>s.metrics?.up_downs).filter(v=>v!=null), 'Up-and-downs / 5', false)}
   ${sessionList.map(s=>`
     <div class="card">
-      <div class="row-between">
-        <div class="serif" style="font-size:13px;color:#1a2e22">${s.planName}</div>
-        <div style="font-size:10px;color:#8aaa90">${fmtDate(s.date)}</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:#111827">${s.planName}</div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px">${fmtDate(s.date)} · ${s.highlights.slice(0,2).join(' · ')}</div>
+        </div>
+        <div style="font-size:12px;color:#9ca3af">${s.duration||'—'}m</div>
       </div>
-      <div style="font-size:11px;color:#8aaa90;margin-top:3px">${s.highlights.join(' · ')}</div>
     </div>`).join('')}` : ''}
 
-  ${games.length === 0 && sessions.length === 0 ? `
-    <div class="center" style="padding:48px 0;color:#8aaa90;font-size:14px">No history yet — play a game or do a drill session!</div>` : ''}
+  ${games.length===0&&sessions.length===0?`<div style="text-align:center;padding:60px 0;color:#9ca3af;font-size:14px">No history yet — play a game to get started!</div>`:''}
 
   <button class="btn-ghost btn-muted" style="width:100%;margin-top:16px" onclick="confirmClear()">Clear All History</button>`;
 }
@@ -1520,9 +1596,9 @@ function renderSession() {
     metricHTML = `
       <div class="row gap-16" style="align-items:center">
         <button class="counter-btn" onclick="adjustCounter(${idx},'${drill.metric}',-1,${drill.metricMax||99})">−</button>
-        <div id="counter-display" class="serif" style="font-size:48px;color:#1a5c34;min-width:42px;text-align:center;line-height:1">${val}</div>
+        <div id="counter-display" class="serif" style="font-size:48px;color:#155c35;min-width:42px;text-align:center;line-height:1">${val}</div>
         <button class="counter-btn" onclick="adjustCounter(${idx},'${drill.metric}',1,${drill.metricMax||99})">+</button>
-        <div style="font-size:11px;color:#8aaa90">/ ${drill.metricMax}</div>
+        <div style="font-size:11px;color:#9ca3af">/ ${drill.metricMax}</div>
       </div>`;
   } else {
     const unit = drill.id==='ladder'?'pts':drill.id==='three_ball'?'ft ring':'ft';
@@ -1531,7 +1607,7 @@ function renderSession() {
       <div class="row" style="gap:10px;align-items:center">
         <input class="inp" type="number" inputmode="decimal" placeholder="—" style="max-width:120px" value="${val}"
           oninput="setDrillVal(${idx},'${drill.metric}',this.value)"/>
-        <div style="font-size:12px;color:#8aaa90">${unit}</div>
+        <div style="font-size:12px;color:#9ca3af">${unit}</div>
       </div>`;
   }
 
@@ -1544,18 +1620,18 @@ function renderSession() {
 
   document.getElementById('app').innerHTML = `
   <div class="session-header">
-    <div class="serif" style="font-size:22px;color:#1a2e22">Session</div>
+    <div class="serif" style="font-size:22px;color:#111827">Session</div>
     <div class="badge" id="session-timer">${fmtTimer(state.timerSecs)}</div>
   </div>
   <div class="row" style="gap:5px;margin-bottom:18px;align-items:center">
     ${dots}
-    <div style="font-size:10px;color:#8aaa90;margin-left:5px">${idx+1} / ${total}</div>
+    <div style="font-size:10px;color:#9ca3af;margin-left:5px">${idx+1} / ${total}</div>
   </div>
   <div class="row-between" style="margin-bottom:8px">
-    <div class="serif" style="font-size:20px;color:#1a2e22;flex:1;margin-right:10px">${drill.name}</div>
+    <div class="serif" style="font-size:20px;color:#111827;flex:1;margin-right:10px">${drill.name}</div>
     ${spaceBadgeHTML(drill, true)}
   </div>
-  <div style="font-size:12px;color:#8aaa90;line-height:1.7;margin-bottom:16px">${drill.description}</div>
+  <div style="font-size:12px;color:#9ca3af;line-height:1.7;margin-bottom:16px">${drill.description}</div>
   <div style="margin-bottom:16px">
     <div class="section-label" style="margin-bottom:8px">Club Used</div>
     <div class="row wrap gap-7">${clubBtns}</div>
@@ -1581,19 +1657,18 @@ function renderDone() {
   return `
   <div style="padding:44px 0 22px;text-align:center">
     <div style="font-size:44px;margin-bottom:10px">⛳</div>
-    <div class="serif" style="font-size:26px;color:#1a2e22;margin-bottom:4px">Session Complete</div>
-    <div style="font-size:12px;color:#8aaa90">${s.duration||'—'} min · ${s.drillCount} drills${s.skipped?` · ${s.skipped} skipped`:''}</div>
+    <div class="serif" style="font-size:26px;color:#111827;margin-bottom:4px">Session Complete</div>
+    <div style="font-size:12px;color:#9ca3af">${s.duration||'—'} min · ${s.drillCount} drills${s.skipped?` · ${s.skipped} skipped`:''}</div>
   </div>
   <div class="card" style="margin-bottom:16px">
     <div class="section-label">What you logged</div>
     ${s.highlights.map((h,i)=>`
-      <div class="row" style="gap:9px;padding:7px 0;${i<s.highlights.length-1?'border-bottom:1px solid #e8f2eb':''}">
-        <div style="width:5px;height:5px;border-radius:50%;background:#1a5c34;flex-shrink:0"></div>
-        <div style="font-size:13px;color:#1a2e22">${h}</div>
+      <div class="row" style="gap:9px;padding:7px 0;${i<s.highlights.length-1?'border-bottom:1px solid #f3f4f6':''}">
+        <div style="width:5px;height:5px;border-radius:50%;background:#155c35;flex-shrink:0"></div>
+        <div style="font-size:13px;color:#111827">${h}</div>
       </div>`).join('')}
   </div>
-  <button class="btn" onclick="goTab('games')">Play a Game →</button>
-  <button class="btn-ghost" style="width:100%;margin-top:8px" onclick="goTab('plans')">Back to Plans</button>`;
+  <button class="btn" onclick="goTab('games')">Play a Game →</button>`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1634,7 +1709,6 @@ function render() {
   else if (state.screen === 'game-done')            html = renderGameDone();
   else if (state.screen === 'done')               html = renderDone();
   else if (state.tab    === 'games')              html = renderGames();
-  else if (state.tab    === 'plans')              html = renderPlans();
   else if (state.tab    === 'drills')             html = renderDrills();
   else if (state.tab    === 'practice')           html = renderPractice();
   else if (state.tab    === 'history')            html = renderHistory();
