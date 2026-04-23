@@ -263,7 +263,7 @@
   .mt-0 { margin-top: 0; }
   .center { text-align: center; }
 
-  /* ── Score buttons (0/1/2) ── */
+  /* ── Score buttons (1/2/3) ── */
   .score-btns { display: flex; gap: 8px; }
   .score-btn {
     flex: 1; height: 56px; border-radius: 12px; font-size: 24px; font-weight: 800;
@@ -271,9 +271,9 @@
     background: #f9fafb; color: #d1d5db; cursor: pointer; transition: all .12s;
   }
   .score-btn:hover { border-color: #155c35; color: #155c35; background: #f0faf4; }
-  .score-btn.sel-0 { background: #fef2f2; border-color: #dc2626; color: #dc2626; }
   .score-btn.sel-1 { background: #fdf6e3; border-color: #c9a84c; color: #c9a84c; }
-  .score-btn.sel-2 { background: #e8f4ed; border-color: #155c35; color: #155c35; }
+  .score-btn.sel-2 { background: #fce7e0; border-color: #dc8b68; color: #dc8b68; }
+  .score-btn.sel-3 { background: #e8f4ed; border-color: #155c35; color: #155c35; }
 
   /* ── Ladder 0/1 buttons ── */
   .ladder-btn {
@@ -384,34 +384,87 @@
 
 // 9-Hole game: 3 chip & run, 3 pitch, 3 flop — arranged in alternating order
 const NINE_HOLES = [
-  { hole:1, type:'chip',  label:'Chip & Run',
-    desc:'Just off the fringe, 10 yds. Bump it on with the 8-iron and let it release to the pin.',
-    pill:'pill-chip' },
-  { hole:2, type:'pitch', label:'Pitch Shot',
-    desc:'18 yds, tight lie in front of a bunker. Carry it cleanly over the bunker and stop it on the green.',
-    pill:'pill-pitch' },
-  { hole:3, type:'flop',  label:'Flop / High Pitch',
-    desc:'Latrobe shot — short-sided with no green to work with. Flop it or hit a high soft pitch, your call. Get it on.',
-    pill:'pill-flop' },
-  { hole:4, type:'chip',  label:'Chip & Run',
-    desc:'Ball sitting up in light rough, 12 yds. Chip and run with the 8-iron — aim for a spot 3 ft on.',
-    pill:'pill-chip' },
-  { hole:5, type:'pitch', label:'Pitch Shot',
-    desc:'22 yds over a front bunker to a tight pin. Carry the bunker, land it soft, trust your loft.',
-    pill:'pill-pitch' },
-  { hole:6, type:'flop',  label:'Flop / High Pitch',
-    desc:'Latrobe tight uphill shot — steep bank in front. Go high or flop it. The green is receptive if you carry the slope.',
-    pill:'pill-flop' },
-  { hole:7, type:'chip',  label:'Chip & Run',
-    desc:'Fringe chip, 8 yds. Ball sitting clean. Pick the line, commit to a landing spot 2 ft on, let it run out.',
-    pill:'pill-chip' },
-  { hole:8, type:'pitch', label:'Pitch Shot',
-    desc:'25 yds, hitting from a firm fairway lie. Pick a landing spot short of the pin and let the green do the work.',
-    pill:'pill-pitch' },
-  { hole:9, type:'flop',  label:'Flop / High Pitch',
-    desc:'Last hole — Latrobe style. Tight uphill pitch to a small green. Flop or punch-high. Make it count.',
-    pill:'pill-flop' },
+  {
+    hole: 1,
+    scenarios: [
+      { desc: '20–30 yd pitch on tight lie, must clear the hill to reach the green', pts: [1, 2, 3], labels: ['Hill blocked','On green','Landing area'] },
+      { desc: 'Side chip with 8-iron from right side of green', pts: [1, 2, 3], labels: ['Short','Close','Tap-in'] },
+      { desc: 'Back edge downhill chip', pts: [1, 2, 3], labels: ['Short','Close','Tap-in'] },
+    ],
+  },
+  {
+    hole: 2,
+    scenarios: [
+      { desc: 'Chip to close pin from tight lie', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+      { desc: 'Chip to back pin from tight lie', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+      { desc: 'Shot went over green — short chip back from slight rough to close pin', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+    ],
+  },
+  {
+    hole: 3,
+    scenarios: [
+      { desc: 'Left short left — 20–30 yd pitch on tight lie, must clear the rough to land on green', pts: [1, 2, 3], labels: ['Cleared rough','On green','Perfect spot'] },
+      { desc: 'Left short right — short pitch from tight lie to front pin', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+    ],
+  },
+  {
+    hole: 4,
+    scenarios: [
+      { desc: 'Pitch shot from tight lie — any distance', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+      { desc: 'Chip shot from tight lie — any distance', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+      { desc: 'Shot from rough — pitch or chip', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+    ],
+  },
+  {
+    hole: 5,
+    scenarios: [
+      { desc: 'Pitch shot from tight lie — any distance', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+      { desc: 'Chip shot from tight lie — any distance', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+      { desc: 'Shot from rough — pitch or chip', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+    ],
+  },
+  {
+    hole: 6,
+    scenarios: [
+      { desc: 'Pitch or chip from tight lie', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+      { desc: 'Short pitch from rough', pts: [1, 2, 3], labels: ['On green','Good contact','Perfect'] },
+    ],
+  },
+  {
+    hole: 7,
+    scenarios: [
+      { desc: 'Tight lie pitch/chip to short cup', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+      { desc: 'Tight lie pitch/chip to back cup', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+    ],
+  },
+  {
+    hole: 8,
+    scenarios: [
+      { desc: 'Tight lie pitch/chip to short cup', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+      { desc: 'Tight lie pitch/chip to back cup', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+    ],
+  },
+  {
+    hole: 9,
+    scenarios: [
+      { desc: 'Tight lie pitch or flop to short pin', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+      { desc: 'Tight lie pitch or flop to deep pin', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+      { desc: 'Downhill chip to short pin', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+      { desc: 'Downhill chip to deep pin', pts: [1, 2, 3], labels: ['On green','Close','Tap-in'] },
+    ],
+  },
 ];
+
+// Initialize current hole scenarios at app start
+let currentHoleScenarios = {};
+function initializeHoleScenarios() {
+  NINE_HOLES.forEach((h, i) => {
+    if (h.scenarios.length > 0) {
+      const randomIdx = Math.floor(Math.random() * h.scenarios.length);
+      currentHoleScenarios[i] = randomIdx;
+    }
+  });
+}
 
 // Ladder game: 4 shots with 8i, 4 shots with 52°
 const LADDER_SHOTS = [
@@ -684,6 +737,7 @@ function updateNavActive() {
 // 9-HOLE GAME
 // ─────────────────────────────────────────────────────────────────────────────
 function startNineHole() {
+  initializeHoleScenarios();
   state.nineScores = {};
   state.screen = 'game-nine';
   render();
@@ -691,14 +745,11 @@ function startNineHole() {
 
 function setNineScore(idx, score) {
   state.nineScores[idx] = score;
-  // re-render just the score buttons for this hole
-  NINE_HOLES.forEach((_, i) => {
-    [0,1,2].forEach(s => {
-      const btn = document.getElementById(`sbtn-${i}-${s}`);
-      if (btn) {
-        btn.className = `score-btn${state.nineScores[i] === s ? ' sel-'+s : ''}`;
-      }
-    });
+  [1,2,3].forEach(s => {
+    const btn = document.getElementById(`sbtn-${idx}-${s}`);
+    if (btn) {
+      btn.className = `score-btn${state.nineScores[idx] === s ? ' sel-'+s : ''}`;
+    }
   });
   updateNineTotal();
 }
@@ -714,21 +765,24 @@ function finishNineHole() {
   const scored = Object.keys(state.nineScores).length;
   if (scored < 9 && !confirm(`You've only scored ${scored} of 9 holes. Finish anyway?`)) return;
 
-  const scores = NINE_HOLES.map((h, i) => ({ ...h, score: state.nineScores[i] ?? null }));
+  const scores = NINE_HOLES.map((h, i) => {
+    const scenarioIdx = currentHoleScenarios[i] ?? 0;
+    const scenario = h.scenarios[scenarioIdx];
+    return { hole: h.hole, scenario: scenario.desc, score: state.nineScores[i] ?? null };
+  });
   const total = scores.reduce((a,h) => a + (h.score ?? 0), 0);
 
-  // breakdown by type
-  const byType = { chip:0, pitch:0, flop:0 };
-  const maxByType = { chip:0, pitch:0, flop:0 };
-  scores.forEach(h => {
-    maxByType[h.type] += 2;
-    byType[h.type] += (h.score ?? 0);
-  });
+  // breakdown by score (1, 2, 3)
+  const byScore = { 1: 0, 2: 0, 3: 0 };
+  scores.forEach(h => { if (h.score) byScore[h.score]++; });
 
   const game = {
-    type: 'nine', date: new Date().toISOString(),
-    total, maxPossible: 18, scores,
-    byType, maxByType,
+    type: 'nine',
+    date: new Date().toISOString(),
+    total,
+    maxPossible: 27,
+    scores,
+    byScore,
   };
   addGame(game);
   state.lastGame = game;
@@ -987,7 +1041,6 @@ function renderGames() {
         </div>
       </div>
     </div>
-    <div class="hero-grade">${nineGs.length} played</div>
   </div>
 
   <div style="background:#2d3320;border-radius:20px;padding:20px;margin-bottom:10px;cursor:pointer;position:relative;overflow:hidden" onclick="startLadder()">
@@ -1003,7 +1056,6 @@ function renderGames() {
         <div style="display:flex;flex-direction:column;gap:4px">
           <span style="background:rgba(110,231,160,.15);color:#6ee7a0;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em">4 × 8-Iron</span>
           <span style="background:rgba(240,208,112,.15);color:#f0d070;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em">4 × 52°</span>
-          <div style="font-size:10px;color:rgba(240,208,112,.4);margin-top:2px;text-align:center">${ladderGs.length} played</div>
         </div>
       </div>
     </div>
@@ -1020,27 +1072,29 @@ function renderNineHole() {
   const scored = Object.keys(state.nineScores).length;
 
   const holesHTML = NINE_HOLES.map((h, i) => {
+    const scenarioIdx = currentHoleScenarios[i] ?? 0;
+    const scenario = h.scenarios[scenarioIdx];
     const cur = state.nineScores[i];
-    const scored0 = cur===0, scored1 = cur===1, scored2 = cur===2;
+
     return `
     <div class="card" style="margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
         <div class="hole-num" style="width:32px;height:32px;font-size:14px;flex-shrink:0">${h.hole}</div>
-        <span class="shot-type-pill ${h.pill}">${h.label}</span>
+        <div style="font-size:12px;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:.06em">Hole ${h.hole}</div>
       </div>
-      <div style="font-size:15px;font-weight:500;color:#111827;line-height:1.55;margin-bottom:14px">${h.desc}</div>
+      <div style="font-size:15px;font-weight:500;color:#111827;line-height:1.55;margin-bottom:14px">${scenario.desc}</div>
       <div class="score-btns">
-        <button id="sbtn-${i}-0" class="score-btn${scored0?' sel-0':''}" onclick="setNineScore(${i},0)">
-          <div style="font-size:22px;font-weight:800">0</div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">MISS</div>
+        <button id="sbtn-${i}-1" class="score-btn${cur===1?' sel-1':''}" onclick="setNineScore(${i},1)">
+          <div style="font-size:18px;font-weight:800">1</div>
+          <div style="font-size:8px;font-weight:600;letter-spacing:.04em;margin-top:2px;opacity:.7">${scenario.labels[0]}</div>
         </button>
-        <button id="sbtn-${i}-1" class="score-btn${scored1?' sel-1':''}" onclick="setNineScore(${i},1)">
-          <div style="font-size:22px;font-weight:800">1</div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">CLOSE</div>
+        <button id="sbtn-${i}-2" class="score-btn${cur===2?' sel-2':''}" onclick="setNineScore(${i},2)">
+          <div style="font-size:18px;font-weight:800">2</div>
+          <div style="font-size:8px;font-weight:600;letter-spacing:.04em;margin-top:2px;opacity:.7">${scenario.labels[1]}</div>
         </button>
-        <button id="sbtn-${i}-2" class="score-btn${scored2?' sel-2':''}" onclick="setNineScore(${i},2)">
-          <div style="font-size:22px;font-weight:800">2</div>
-          <div style="font-size:9px;font-weight:600;letter-spacing:.04em;margin-top:1px;opacity:.7">TAP-IN</div>
+        <button id="sbtn-${i}-3" class="score-btn${cur===3?' sel-3':''}" onclick="setNineScore(${i},3)">
+          <div style="font-size:18px;font-weight:800">3</div>
+          <div style="font-size:8px;font-weight:600;letter-spacing:.04em;margin-top:2px;opacity:.7">${scenario.labels[2]}</div>
         </button>
       </div>
     </div>`;
@@ -1050,7 +1104,7 @@ function renderNineHole() {
   <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 0 16px">
     <div>
       <div style="font-size:22px;font-weight:800;color:#111827">9-Hole Game</div>
-      <div style="font-size:12px;color:#9ca3af;margin-top:2px">Miss · Close · Tap-in</div>
+      <div style="font-size:12px;color:#9ca3af;margin-top:2px">1 · 2 · 3 points per hole</div>
     </div>
     <div id="nine-running-total" class="badge" style="font-size:13px">${total} pts · ${scored}/9</div>
   </div>
@@ -1061,6 +1115,24 @@ function renderNineHole() {
   <div class="center" style="margin-top:12px">
     <button class="btn-ghost btn-muted" onclick="goTab('games')">← Back to Games</button>
   </div>`;
+}
+
+function setNineScore(idx, score) {
+  state.nineScores[idx] = score;
+  [1,2,3].forEach(s => {
+    const btn = document.getElementById(`sbtn-${idx}-${s}`);
+    if (btn) {
+      btn.className = `score-btn${state.nineScores[idx]===s?' sel-'+s:''}`;
+    }
+  });
+  updateNineTotal();
+}
+
+function updateNineTotal() {
+  const total = Object.values(state.nineScores).reduce((a,b)=>a+b,0);
+  const scored = Object.keys(state.nineScores).length;
+  const el = document.getElementById('nine-running-total');
+  if (el) el.textContent = `${total} pts · ${scored}/9 holes`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1146,9 +1218,9 @@ function renderGameDone() {
 
   const pillsHTML = isNine
     ? `<div class="pill-stat-row">
-        <div class="pill-stat pill-green"><div class="pill-stat-val">${g.byType.chip}</div><div class="pill-stat-lbl">Chip /6</div></div>
-        <div class="pill-stat pill-gold"><div class="pill-stat-val">${g.byType.pitch}</div><div class="pill-stat-lbl">Pitch /6</div></div>
-        <div class="pill-stat pill-red"><div class="pill-stat-val">${g.byType.flop}</div><div class="pill-stat-lbl">Flop /6</div></div>
+        <div class="pill-stat pill-gold" style="background:#fdf6e3"><div class="pill-stat-val" style="color:#c9a84c">${g.byScore[1]}</div><div class="pill-stat-lbl" style="color:#c9a84c">1 pt</div></div>
+        <div class="pill-stat pill-red" style="background:#fce7e0"><div class="pill-stat-val" style="color:#dc8b68">${g.byScore[2]}</div><div class="pill-stat-lbl" style="color:#dc8b68">2 pts</div></div>
+        <div class="pill-stat pill-green"><div class="pill-stat-val">${g.byScore[3]}</div><div class="pill-stat-lbl">3 pts</div></div>
       </div>`
     : `<div class="pill-stat-row">
         <div class="pill-stat pill-green"><div class="pill-stat-val">${g.by8i}</div><div class="pill-stat-lbl">8-Iron /4</div></div>
@@ -1156,13 +1228,11 @@ function renderGameDone() {
       </div>`;
 
   const tip = isNine
-    ? (g.byType.chip < g.byType.pitch && g.byType.chip < g.byType.flop
-        ? 'Chip & run was your weakest — focus on bumping the ball onto the green with the 8-iron.'
-        : g.byType.flop < g.byType.chip && g.byType.flop < g.byType.pitch
-        ? 'Flop shots were the challenge. Try the Landing Spot Game next session.'
-        : g.byType.pitch < g.byType.chip && g.byType.pitch < g.byType.flop
-        ? 'Pitching was the weak spot. Work on your 7, 9, 11 o\'clock backswings with the 52°.'
-        : 'Balanced across all three shot types. Solid round.')
+    ? (g.byScore[3] === 0
+        ? 'No perfect shots today — focus on executing one good swing per hole next time.'
+        : g.byScore[1] > g.byScore[2] && g.byScore[1] > g.byScore[3]
+        ? 'Lots of on-the-green hits, but not many perfect shots. Work on commitment and follow-through.'
+        : 'Nice balance. The 3-pointers show you understand what good execution looks like.')
     : (g.by8i > g.by52
         ? '8-iron was stronger. Your 52° needs work — focus on clean contact from different distances.'
         : g.by52 > g.by8i
@@ -1716,6 +1786,7 @@ function render() {
   document.getElementById('app').innerHTML = html;
 }
 
+initializeHoleScenarios();
 render();
 </script>
 </body>
